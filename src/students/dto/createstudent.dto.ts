@@ -31,6 +31,10 @@ export class CreateStudentDto{
     is_verified:boolean=false
 
     @IsNotEmpty()
+    @IsString()
+    role:string='student'
+
+    @IsNotEmpty()
     @IsBoolean()
     is_suspended:boolean=false
 

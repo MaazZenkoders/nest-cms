@@ -7,6 +7,11 @@ import { StudentsModule } from './students/students.module';
 import { Student } from './students/entities/student';
 import { TeachersModule } from './teachers/teachers.module';
 import { Teacher } from './teachers/entities/teacher';
+import { AdminsModule } from './admins/admins.module';
+import { JwtModule } from '@nestjs/jwt';
+import { Admin } from './admins/entities/admin';
+import { DomainsModule } from './domains/domains.module';
+import { Domain } from './domains/entities/domain';
 
 @Module({
   imports: [
@@ -17,13 +22,20 @@ import { Teacher } from './teachers/entities/teacher';
       username: 'postgres',
       password: 'db_post',
       database: 'cms_db',
-      entities: [Student,Teacher],
+      entities: [Student, Teacher, Admin, Domain],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Student,Teacher]),
+    JwtModule.register({
+      global: true,
+      secret: 'mysecret',
+      signOptions: { expiresIn: '1h' },
+    }),
+    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain]),
     AuthModule,
     StudentsModule,
     TeachersModule,
+    AdminsModule,
+    DomainsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

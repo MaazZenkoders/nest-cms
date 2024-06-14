@@ -1,6 +1,6 @@
 import { IsEmail, IsString, IsNotEmpty, IsNumber, IsBoolean } from "class-validator";
 
-export class CreateTeacherDto{
+export class CreateAdminDto{
 
     @IsNotEmpty()
     @IsEmail()
@@ -27,15 +27,11 @@ export class CreateTeacherDto{
     address:string
 
     @IsNotEmpty()
-    @IsString()
-    role:string='teacher'
-
-    @IsNotEmpty()
     @IsBoolean()
     is_verified:boolean=false
 
     @IsNotEmpty()
-    @IsBoolean()
-    is_suspended:boolean=false
+    @IsString()
+    role:string='admin'
 
 }
