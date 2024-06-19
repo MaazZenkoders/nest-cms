@@ -6,9 +6,15 @@ import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { Admin } from 'src/admins/entities/admin';
 import { Domain } from 'src/domains/entities/domain';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student, Teacher, Admin, Domain])],
+  imports: [
+    ConfigModule,
+    HttpModule,
+    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain]),
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })

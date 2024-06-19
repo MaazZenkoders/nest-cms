@@ -1,41 +1,45 @@
-import { IsEmail, IsString, IsNotEmpty, IsNumber, IsBoolean } from "class-validator";
+import {
+  IsEmail,
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsBoolean,
+} from 'class-validator';
 
-export class CreateStudentDto{
+export class CreateStudentDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
-    @IsNotEmpty()
-    @IsEmail()
-    email:string;
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    @IsNotEmpty()
-    @IsString()
-    name:string
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 
-    @IsNotEmpty()
-    @IsString()
-    password:string
+  @IsNotEmpty()
+  @IsNumber()
+  age: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    age:number
+  @IsNotEmpty()
+  @IsNumber()
+  contact: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    contact:number
+  @IsNotEmpty()
+  @IsString()
+  address: string;
 
-    @IsNotEmpty()
-    @IsString()
-    address:string
+  @IsNotEmpty()
+  @IsBoolean()
+  is_verified: boolean = false;
 
-    @IsNotEmpty()
-    @IsBoolean()
-    is_verified:boolean=false
+  @IsNotEmpty()
+  @IsString()
+  role: string = 'student';
 
-    @IsNotEmpty()
-    @IsString()
-    role:string='student'
-
-    @IsNotEmpty()
-    @IsBoolean()
-    is_suspended:boolean=false
-
+  @IsNotEmpty()
+  @IsBoolean()
+  is_suspended: boolean = false;
 }

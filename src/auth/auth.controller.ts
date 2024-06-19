@@ -4,7 +4,10 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateStudentDto } from 'src/students/dto/createstudent.dto';
 import { AuthService } from './auth.service';
@@ -13,71 +16,87 @@ import { CreateAdminDto } from 'src/admins/dto/createadmin.dto';
 import { LoginStudentDto } from 'src/students/dto/loginstudent.dto';
 import { LoginAdminDto } from 'src/admins/dto/loginadmin.dto';
 import { LoginTeacherDto } from 'src/teachers/dto/loginteacher.dto';
-import { EmailAuthGuard } from 'src/guards/emailauthorization.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(EmailAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FileInterceptor('image'))
   @Post('/studentsignup')
-  async createStudent(@Body() createstudentdto: CreateStudentDto) {
-    const user = await this.authService.studentSignup(createstudentdto);
+  async createStudent(
+    @Body() createstudentdto: CreateStudentDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const data = await this.authService.studentSignup(createstudentdto, file);
     return {
       status: HttpCode(HttpStatus.CREATED),
-      user,
+      data,
       message: 'Student created succesfully',
     };
   }
 
-  @UseGuards(EmailAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FileInterceptor('image'))
   @Post('/teachersignup')
-  async createTeacher(@Body() createteacherdto: CreateTeacherDto) {
-    const user = await this.authService.teacherSignup(createteacherdto);
+  async createTeacher(
+    @Body() createteacherdto: CreateTeacherDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const data = await this.authService.teacherSignup(createteacherdto, file);
     return {
       status: HttpCode(HttpStatus.CREATED),
-      user,
+      data,
       message: 'Teacher created succesfully',
     };
   }
 
-  @UseGuards(EmailAuthGuard)
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FileInterceptor('image'))
   @Post('/adminsignup')
-  async createAdmin(@Body() createadmindto: CreateAdminDto) {
-    const user = await this.authService.adminSignup(createadmindto);
+  async createAdmin(
+    @Body() createadmindto: CreateAdminDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const data = await this.authService.adminSignup(createadmindto, file);
     return {
       status: HttpCode(HttpStatus.CREATED),
-      user,
+      data,
       message: 'Admin created succesfully',
     };
   }
 
+  @UsePipes(new ValidationPipe())
   @Post('/studentlogin')
   async loginStudent(@Body() loginstudentdto: LoginStudentDto) {
-    const user = await this.authService.studentLogin(loginstudentdto);
+    const data = await this.authService.studentLogin(loginstudentdto);
     return {
       status: HttpCode(HttpStatus.OK),
-      user,
+      data,
       message: 'Student logged in succesfully',
     };
   }
 
+  @UsePipes(new ValidationPipe())
   @Post('/teacherlogin')
   async loginTeacher(@Body() loginteacherdto: LoginTeacherDto) {
-    const user = await this.authService.teacherLogin(loginteacherdto);
+    const data = await this.authService.teacherLogin(loginteacherdto);
     return {
       status: HttpCode(HttpStatus.OK),
-      user,
+      data,
       message: 'Teacher logged in succesfully',
     };
   }
 
+  @UsePipes(new ValidationPipe())
   @Post('/adminlogin')
   async loginAdmin(@Body() loginadmindto: LoginAdminDto) {
-    const user = await this.authService.adminLogin(loginadmindto);
+    const data = await this.authService.adminLogin(loginadmindto);
     return {
       status: HttpCode(HttpStatus.OK),
-      user,
+      data,
       message: 'Admin logged in succesfully',
     };
   }

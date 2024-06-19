@@ -7,6 +7,6 @@ import { Domain } from 'domain';
 @Module({
   imports: [TypeOrmModule.forFeature([Domain])],
   controllers: [DomainsController],
-  providers: [DomainsService]
+  providers: [DomainsService],
 })
 export class DomainsModule {}

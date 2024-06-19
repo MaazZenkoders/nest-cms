@@ -1,7 +1,6 @@
-import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { async } from 'rxjs';
 import { CreateAdminDto } from 'src/admins/dto/createadmin.dto';
 import { Admin } from 'src/admins/entities/admin';
 import { CreateStudentDto } from 'src/students/dto/createstudent.dto';
@@ -13,11 +12,16 @@ import * as bcrypt from 'bcrypt';
 import { LoginStudentDto } from 'src/students/dto/loginstudent.dto';
 import { LoginTeacherDto } from 'src/teachers/dto/loginteacher.dto';
 import { LoginAdminDto } from 'src/admins/dto/loginadmin.dto';
+import * as FormData from 'form-data';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
+
+    private readonly httpService: HttpService,
 
     @InjectRepository(Student)
     private StudentRepository: Repository<Student>,
@@ -29,7 +33,10 @@ export class AuthService {
     private AdminRepository: Repository<Admin>,
   ) {}
 
-  async studentSignup(createstudentdto: CreateStudentDto) {
+  async studentSignup(
+    createstudentdto: CreateStudentDto,
+    file: Express.Multer.File,
+  ) {
     const existingUser = await this.StudentRepository.findOneBy({
       email: createstudentdto.email,
     });
@@ -39,10 +46,26 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    let imageUrl: string;
+    if (file) {
+      const form = new FormData();
+      form.append('image', file.buffer, file.originalname);
+      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
+      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+      const response = await firstValueFrom(
+        this.httpService.post(uploadUrl, form, {
+          headers: {
+            ...form.getHeaders(),
+          },
+        }),
+      );
+      imageUrl = response.data.data.url;
+    }
     const hashedPassword = await bcrypt.hash(createstudentdto.password, 10);
     const user = this.StudentRepository.create({
       ...createstudentdto,
       password: hashedPassword,
+      image_url: imageUrl,
       created_at: new Date(Date.now()),
       updated_at: new Date(Date.now()),
     });
@@ -51,11 +74,14 @@ export class AuthService {
       email: createstudentdto.email,
       role: createstudentdto.role,
     };
-    const token = await this.jwtService.signAsync(payload);
-    return { user, token };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { user, accessToken };
   }
 
-  async teacherSignup(createteacherdto: CreateTeacherDto) {
+  async teacherSignup(
+    createteacherdto: CreateTeacherDto,
+    file: Express.Multer.File,
+  ) {
     const existingUser = await this.TeacherRepository.findOneBy({
       email: createteacherdto.email,
     });
@@ -65,9 +91,25 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    let imageUrl: string;
+    if (file) {
+      const form = new FormData();
+      form.append('image', file.buffer, file.originalname);
+      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
+      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+      const response = await firstValueFrom(
+        this.httpService.post(uploadUrl, form, {
+          headers: {
+            ...form.getHeaders(),
+          },
+        }),
+      );
+      imageUrl = response.data.data.url;
+    }
     const hashedPassword = await bcrypt.hash(createteacherdto.password, 10);
     const user = this.TeacherRepository.create({
       ...createteacherdto,
+      image_url: imageUrl,
       password: hashedPassword,
       created_at: new Date(Date.now()),
       updated_at: new Date(Date.now()),
@@ -77,11 +119,11 @@ export class AuthService {
       email: createteacherdto.email,
       role: createteacherdto.role,
     };
-    const token = await this.jwtService.signAsync(payload);
-    return { user, token };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { user, accessToken };
   }
 
-  async adminSignup(createadmindto: CreateAdminDto) {
+  async adminSignup(createadmindto: CreateAdminDto, file: Express.Multer.File) {
     const existingUser = await this.AdminRepository.findOneBy({
       email: createadmindto.email,
     });
@@ -91,17 +133,33 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    let imageUrl: string;
+    if (file) {
+      const form = new FormData();
+      form.append('image', file.buffer, file.originalname);
+      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
+      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+      const response = await firstValueFrom(
+        this.httpService.post(uploadUrl, form, {
+          headers: {
+            ...form.getHeaders(),
+          },
+        }),
+      );
+      imageUrl = response.data.data.url;
+    }
     const hashedPassword = await bcrypt.hash(createadmindto.password, 10);
     const user = this.AdminRepository.create({
       ...createadmindto,
       password: hashedPassword,
+      image_url: imageUrl,
       created_at: new Date(Date.now()),
       updated_at: new Date(Date.now()),
     });
     this.AdminRepository.save(user);
     const payload = { email: createadmindto.email, role: createadmindto.role };
-    const token = await this.jwtService.signAsync(payload);
-    return { user, token };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { user, accessToken };
   }
 
   async studentLogin(loginstudentdto: LoginStudentDto) {
@@ -122,8 +180,8 @@ export class AuthService {
       throw new HttpException('Invalid credentials.', HttpStatus.UNAUTHORIZED);
     }
     const payload = { email: user.email, role: user.role };
-    const token = await this.jwtService.signAsync(payload);
-    return { user, token };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { user, accessToken };
   }
 
   async teacherLogin(loginteacherdto: LoginTeacherDto) {
@@ -144,8 +202,8 @@ export class AuthService {
       throw new HttpException('Invalid credentials.', HttpStatus.UNAUTHORIZED);
     }
     const payload = { email: user.email, role: user.role };
-    const token = await this.jwtService.signAsync(payload);
-    return { user, token };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { user, accessToken };
   }
 
   async adminLogin(loginadmindto: LoginAdminDto) {
@@ -166,7 +224,7 @@ export class AuthService {
       throw new HttpException('Invalid credentials.', HttpStatus.UNAUTHORIZED);
     }
     const payload = { email: user.email, role: user.role };
-    const token = await this.jwtService.signAsync(payload);
-    return { user, token };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { user, accessToken };
   }
 }

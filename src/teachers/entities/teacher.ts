@@ -1,38 +1,40 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({name: "teachers"})
+@Entity({ name: 'teachers' })
 export class Teacher {
+  @PrimaryColumn()
+  email: string;
 
-    @PrimaryColumn()
-    email : string
+  @Column()
+  name: string;
 
-    @Column()
-    name:string
+  @Column()
+  password: string;
 
-    @Column()
-    password:string
+  @Column()
+  contact: number;
 
-    @Column()
-    contact:number
+  @Column()
+  age: number;
 
-    @Column()
-    age:number
+  @Column({ nullable: true })
+  image_url: string;
 
-    @Column({default:"teacher"})
-    role:string
+  @Column({ default: 'teacher' })
+  role: string;
 
-    @Column()
-    address:string
+  @Column()
+  address: string;
 
-    @Column({default:"false"})
-    is_verified:boolean
+  @Column({ default: 'false' })
+  is_verified: boolean;
 
-    @Column({default:"false"})
-    is_suspended:boolean
+  @Column({ default: 'false' })
+  is_suspended: boolean;
 
-    @Column({type:'timestamp'})
-    created_at:Date
+  @Column({ type: 'timestamp' })
+  created_at: Date;
 
-    @Column({type:'timestamp'})
-    updated_at:Date
+  @Column({ type: 'timestamp' })
+  updated_at: Date;
 }

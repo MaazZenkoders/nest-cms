@@ -1,9 +1,7 @@
-import { IsString, IsNotEmpty } from "class-validator";
+import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreateDomainDto{
-
-    @IsNotEmpty()
-    @IsString()
-    domain:string;
-
+export class CreateDomainDto {
+  @IsNotEmpty()
+  @IsString()
+  domain: string;
 }

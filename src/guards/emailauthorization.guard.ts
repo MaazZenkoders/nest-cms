@@ -8,26 +8,46 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Domain } from 'src/domains/entities/domain';
+import * as formidable from 'formidable';
+
 @Injectable()
 export class EmailAuthGuard implements CanActivate {
   constructor(
     @InjectRepository(Domain)
-    private readonly DomainRepository: Repository<Domain>,
+    private readonly domainRepository: Repository<Domain>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { email } = request.body;
-    if (!email) {
-      throw new HttpException('Email is required', HttpStatus.BAD_REQUEST);
+    try {
+      const formData = await this.parseFormData(request);
+      const email = formData['email'];
+      if (!email) {
+        throw new HttpException('Email is required', HttpStatus.BAD_REQUEST);
+      }
+      const emailDomain = email.split('@')[1];
+      const whitelistedDomain = await this.domainRepository.findOne({
+        where: { domain: emailDomain },
+      });
+      if (!whitelistedDomain) {
+        throw new HttpException('Domain not allowed', HttpStatus.FORBIDDEN);
+      }
+      return true;
+    } catch (error) {
+      throw new HttpException('Invalid request data', HttpStatus.BAD_REQUEST);
     }
-    const emailDomain = email.split('@')[1];
-    const whitelistedDomain = await this.DomainRepository.findOne({
-      where: { domain: `@${emailDomain}` },
+  }
+
+  private async parseFormData(request: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const form = new formidable.IncomingForm();
+      form.parse(request, (err: any, fields: unknown) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(fields);
+        }
+      });
     });
-    if (!whitelistedDomain) {
-      throw new HttpException('Domain not allowed', HttpStatus.FORBIDDEN);
-    }
-    return true;
   }
 }

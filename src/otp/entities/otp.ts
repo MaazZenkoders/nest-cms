@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'domains' })
-export class Domain {
+@Entity({ name: 'otp' })
+export class Otp {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  domain: string;
+  otp: number;
 }
