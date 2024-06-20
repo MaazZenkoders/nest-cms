@@ -6,8 +6,6 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { CreateStudentDto } from 'src/students/dto/createstudent.dto';
 import { AuthService } from './auth.service';
@@ -23,7 +21,6 @@ import { Express } from 'express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UsePipes(new ValidationPipe())
   @UseInterceptors(FileInterceptor('image'))
   @Post('/studentsignup')
   async createStudent(
@@ -38,7 +35,6 @@ export class AuthController {
     };
   }
 
-  @UsePipes(new ValidationPipe())
   @UseInterceptors(FileInterceptor('image'))
   @Post('/teachersignup')
   async createTeacher(
@@ -53,7 +49,6 @@ export class AuthController {
     };
   }
 
-  @UsePipes(new ValidationPipe())
   @UseInterceptors(FileInterceptor('image'))
   @Post('/adminsignup')
   async createAdmin(
@@ -68,7 +63,6 @@ export class AuthController {
     };
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('/studentlogin')
   async loginStudent(@Body() loginstudentdto: LoginStudentDto) {
     const data = await this.authService.studentLogin(loginstudentdto);
@@ -79,7 +73,6 @@ export class AuthController {
     };
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('/teacherlogin')
   async loginTeacher(@Body() loginteacherdto: LoginTeacherDto) {
     const data = await this.authService.teacherLogin(loginteacherdto);
@@ -90,7 +83,6 @@ export class AuthController {
     };
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('/adminlogin')
   async loginAdmin(@Body() loginadmindto: LoginAdminDto) {
     const data = await this.authService.adminLogin(loginadmindto);

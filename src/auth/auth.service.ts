@@ -15,6 +15,7 @@ import { LoginAdminDto } from 'src/admins/dto/loginadmin.dto';
 import * as FormData from 'form-data';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import { OtpService } from 'src/otp/otp.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,8 @@ export class AuthService {
     private jwtService: JwtService,
 
     private readonly httpService: HttpService,
+
+    private readonly otpService: OtpService,
 
     @InjectRepository(Student)
     private StudentRepository: Repository<Student>,
@@ -45,6 +48,13 @@ export class AuthService {
         'Student with this email already exists.',
         HttpStatus.BAD_REQUEST,
       );
+    }
+    const isOTPValid = await this.otpService.verifyOTP(
+      createstudentdto.email,
+      createstudentdto.otp,
+    );
+    if (!isOTPValid) {
+      throw new HttpException('Invalid or expired OTP', HttpStatus.BAD_REQUEST);
     }
     let imageUrl: string;
     if (file) {

@@ -8,14 +8,18 @@ import { Admin } from 'src/admins/entities/admin';
 import { Domain } from 'src/domains/entities/domain';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { Otp } from 'src/otp/entities/otp';
+import { OtpModule } from 'src/otp/otp.module';
+import { OtpService } from 'src/otp/otp.service';
 
 @Module({
   imports: [
     ConfigModule,
     HttpModule,
-    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain]),
+    OtpModule,
+    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, OtpService],
 })
 export class AuthModule {}
