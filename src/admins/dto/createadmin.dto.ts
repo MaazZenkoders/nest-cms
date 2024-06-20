@@ -21,6 +21,10 @@ export class CreateAdminDto {
 
   @IsNotEmpty()
   @IsNumber()
+  otp: string;
+
+  @IsNotEmpty()
+  @IsNumber()
   age: number;
 
   @IsNotEmpty()
@@ -33,7 +37,7 @@ export class CreateAdminDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  is_verified: boolean = false;
+  is_verified: boolean = true;
 
   @IsNotEmpty()
   @IsString()

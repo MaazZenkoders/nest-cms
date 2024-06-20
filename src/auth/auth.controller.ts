@@ -92,4 +92,31 @@ export class AuthController {
       message: 'Admin logged in succesfully',
     };
   }
+
+  @Post('/verifystudent')
+  async verifyStudent(@Body() createstudentdto: CreateStudentDto) {
+    await this.authService.verifyStudentOtp(createstudentdto)
+    return {
+      status: HttpCode(HttpStatus.ACCEPTED),
+      message:"Student verified"
+    }
+  }
+
+  @Post('/verifyteacher')
+  async verifyTeacher(@Body() createteacherdto: CreateTeacherDto) {
+    await this.authService.verifyTeacherOtp(createteacherdto)
+    return {
+      status: HttpCode(HttpStatus.ACCEPTED),
+      message:"Teacher verified"
+    }
+  }
+
+  @Post('/verifyadmin')
+  async verifyAdmin(@Body() createadmindto: CreateAdminDto) {
+    await this.authService.verifyAdminOtp(createadmindto)
+    return {
+      status: HttpCode(HttpStatus.ACCEPTED),
+      message:"Admin verified"
+    }
+  }
 }

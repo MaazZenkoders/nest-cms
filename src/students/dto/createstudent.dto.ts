@@ -37,7 +37,7 @@ export class CreateStudentDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  is_verified: boolean = false;
+  is_verified: boolean = true;
 
   @IsNotEmpty()
   @IsString()

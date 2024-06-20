@@ -14,16 +14,5 @@ export class OtpController {
       code,
       message: 'OTP generated',
     };
-  }
-
-  @Post('/verify')
-  @HttpCode(HttpStatus.OK)
-  async verifyOTP(@Body('email') email: string, @Body('code') code: string) {
-    const isValid = await this.otpService.verifyOTP(email, code);
-    return {
-      status: HttpCode(HttpStatus.OK),
-      isValid,
-      message: 'OTP verified',
-    };
-  }
+}
 }

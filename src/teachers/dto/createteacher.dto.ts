@@ -28,6 +28,10 @@ export class CreateTeacherDto {
   contact: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  otp: string;
+
+  @IsNotEmpty()
   @IsString()
   address: string;
 
@@ -37,7 +41,7 @@ export class CreateTeacherDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  is_verified: boolean = false;
+  is_verified: boolean = true;
 
   @IsNotEmpty()
   @IsBoolean()

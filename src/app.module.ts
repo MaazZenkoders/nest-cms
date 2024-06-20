@@ -16,10 +16,13 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule } from '@nestjs/config';
 import { OtpModule } from './otp/otp.module';
 import { Otp } from './otp/entities/otp';
+import { CoursesModule } from './courses/courses.module';
+import { Course } from './courses/entities/course';
+
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -27,7 +30,7 @@ import { Otp } from './otp/entities/otp';
       username: 'postgres',
       password: 'db_post',
       database: 'cms_db',
-      entities: [Student, Teacher, Admin, Domain, Otp],
+      entities: [Student, Teacher, Admin, Domain, Otp, Course],
       synchronize: true,
     }),
     JwtModule.register({
@@ -35,7 +38,7 @@ import { Otp } from './otp/entities/otp';
       secret: 'mysecret',
       signOptions: { expiresIn: '1h' },
     }),
-    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp]),
+    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp, Course]),
     MulterModule.register({
       dest: './uploads',
     }),
@@ -45,6 +48,7 @@ import { Otp } from './otp/entities/otp';
     AdminsModule,
     DomainsModule,
     OtpModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

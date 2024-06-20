@@ -26,7 +26,7 @@ export class Student {
   @Column()
   address: string;
 
-  @Column({ default: 'false' })
+  @Column({ default: 'true' })
   is_verified: boolean;
 
   @Column({ default: 'false' })

@@ -11,15 +11,18 @@ import { ConfigModule } from '@nestjs/config';
 import { Otp } from 'src/otp/entities/otp';
 import { OtpModule } from 'src/otp/otp.module';
 import { OtpService } from 'src/otp/otp.service';
+import { DomainsService } from 'src/domains/domains.service';
+import { DomainsModule } from 'src/domains/domains.module';
 
 @Module({
   imports: [
     ConfigModule,
     HttpModule,
     OtpModule,
+    DomainsModule,
     TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, OtpService],
+  providers: [AuthService, OtpService, DomainsService],
 })
 export class AuthModule {}
