@@ -18,6 +18,8 @@ import { OtpModule } from './otp/otp.module';
 import { Otp } from './otp/entities/otp';
 import { CoursesModule } from './courses/courses.module';
 import { Course } from './courses/entities/course';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { Enrollment } from './enrollments/entities/enrollments';
 
 
 @Module({
@@ -30,7 +32,7 @@ import { Course } from './courses/entities/course';
       username: 'postgres',
       password: 'db_post',
       database: 'cms_db',
-      entities: [Student, Teacher, Admin, Domain, Otp, Course],
+      entities: [Student, Teacher, Admin, Domain, Otp, Course, Enrollment],
       synchronize: true,
     }),
     JwtModule.register({
@@ -38,7 +40,7 @@ import { Course } from './courses/entities/course';
       secret: 'mysecret',
       signOptions: { expiresIn: '1h' },
     }),
-    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp, Course]),
+    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp, Course, Enrollment]),
     MulterModule.register({
       dest: './uploads',
     }),
@@ -49,6 +51,7 @@ import { Course } from './courses/entities/course';
     DomainsModule,
     OtpModule,
     CoursesModule,
+    EnrollmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

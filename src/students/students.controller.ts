@@ -16,7 +16,7 @@ import { Role } from 'src/decorators/roles.decorator';
 export class StudentsController {
   constructor(private readonly studentService: StudentsService) {}
 
-  @Role('admin', 'teacher')
+  @Role('admin')
   @Get('/getAll')
   async getAllStudents() {
     const students = await this.studentService.getAllStudents();
@@ -27,7 +27,7 @@ export class StudentsController {
     };
   }
 
-  @Role('admin', 'teacher')
+  @Role('admin')
   @Get('/:email')
   async getStudentById(@Param('email') email: string) {
     const student = await this.studentService.getStudentById(email);

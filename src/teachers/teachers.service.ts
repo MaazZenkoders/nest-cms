@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Teacher } from './entities/teacher';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Student } from 'src/students/entities/student';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class TeachersService {
             return teachers;
         }
     
-      async getTeacherById(email: string): Promise<Student> {
+      async getTeacherById(email: string): Promise<Teacher> {
         const teacher = await this.teacherRepository.findOneBy({ email });
         if (!teacher) {
           throw new NotFoundException(`Teacher with email ${email} not found`);

@@ -42,9 +42,9 @@ export class RoleAuthorizationGuard implements CanActivate {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
 
-    const userRoles = payload.roles;
+    const userRoles = payload.role;
     if (!userRoles) {
-      throw new HttpException('Roles not found in token', HttpStatus.FORBIDDEN);
+      throw new HttpException('Role not found in token', HttpStatus.FORBIDDEN);
     }
 
     const hasRole = () =>

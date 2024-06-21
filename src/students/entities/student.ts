@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Enrollment } from 'src/enrollments/entities/enrollments';
 
 @Entity({ name: 'students' })
 export class Student {
@@ -26,10 +27,10 @@ export class Student {
   @Column()
   address: string;
 
-  @Column({ default: 'true' })
+  @Column({ default: true })
   is_verified: boolean;
 
-  @Column({ default: 'false' })
+  @Column({ default: false })
   is_suspended: boolean;
 
   @Column({ type: 'timestamp' })
@@ -37,4 +38,7 @@ export class Student {
 
   @Column({ type: 'timestamp' })
   updated_at: Date;
+
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+  enrollments: Enrollment[];
 }
