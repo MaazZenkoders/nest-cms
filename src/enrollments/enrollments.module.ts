@@ -7,8 +7,8 @@ import { Student } from 'src/students/entities/student';
 import { Enrollment } from './entities/enrollments';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Course,Student, Enrollment])],
+  imports: [TypeOrmModule.forFeature([Course, Student, Enrollment])],
   controllers: [EnrollmentsController],
-  providers: [EnrollmentsService]
+  providers: [EnrollmentsService],
 })
 export class EnrollmentsModule {}

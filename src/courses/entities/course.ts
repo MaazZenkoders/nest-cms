@@ -1,3 +1,4 @@
+import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
 import { Enrollment } from 'src/enrollments/entities/enrollments';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
@@ -13,7 +14,7 @@ export class Course {
   description: string;
 
   @Column({ type: 'date' })
-  deadline : Date
+  deadline: Date;
 
   @Column({ type: 'timestamp' })
   created_at: Date;
@@ -23,4 +24,7 @@ export class Course {
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
   enrollments: Enrollment[];
+
+  @OneToMany(() => AssignedCourses, (assignedcourse) => assignedcourse.course)
+  assignedcourses: AssignedCourses[];
 }

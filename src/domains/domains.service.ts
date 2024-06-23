@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, UseGuards } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateDomainDto } from './dto/domain.dto';
 import { Domain } from './entities/domain';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +35,7 @@ export class DomainsService {
   }
 
   async getAllDomains() {
-    const domains = await this.DomainRepository.find()
-    return domains
+    const domains = await this.DomainRepository.find();
+    return domains;
   }
 }

@@ -1,10 +1,9 @@
-import { IsString, IsNotEmpty, IsNumber, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class CreateOtpDto {
-
   @IsNotEmpty()
   @IsEmail()
-  email:string
+  email: string;
 
   @IsNotEmpty()
   @IsString()

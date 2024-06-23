@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'teachers' })
 export class Teacher {
@@ -37,4 +38,7 @@ export class Teacher {
 
   @Column({ type: 'timestamp' })
   updated_at: Date;
+
+  @OneToMany(() => AssignedCourses, (assignedcourse) => assignedcourse.teacher)
+  assignedcourses: AssignedCourses[];
 }

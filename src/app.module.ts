@@ -20,11 +20,12 @@ import { CoursesModule } from './courses/courses.module';
 import { Course } from './courses/entities/course';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
 import { Enrollment } from './enrollments/entities/enrollments';
-
+import { AssignedcoursesModule } from './assignedcourses/assignedcourses.module';
+import { AssignedCourses } from './assignedcourses/entities/assignedcourses';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -32,7 +33,16 @@ import { Enrollment } from './enrollments/entities/enrollments';
       username: 'postgres',
       password: 'db_post',
       database: 'cms_db',
-      entities: [Student, Teacher, Admin, Domain, Otp, Course, Enrollment],
+      entities: [
+        Student,
+        Teacher,
+        Admin,
+        Domain,
+        Otp,
+        Course,
+        Enrollment,
+        AssignedCourses,
+      ],
       synchronize: true,
     }),
     JwtModule.register({
@@ -40,7 +50,16 @@ import { Enrollment } from './enrollments/entities/enrollments';
       secret: 'mysecret',
       signOptions: { expiresIn: '1h' },
     }),
-    TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp, Course, Enrollment]),
+    TypeOrmModule.forFeature([
+      Student,
+      Teacher,
+      Admin,
+      Domain,
+      Otp,
+      Course,
+      Enrollment,
+      AssignedCourses,
+    ]),
     MulterModule.register({
       dest: './uploads',
     }),
@@ -52,6 +71,7 @@ import { Enrollment } from './enrollments/entities/enrollments';
     OtpModule,
     CoursesModule,
     EnrollmentsModule,
+    AssignedcoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

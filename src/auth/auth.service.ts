@@ -1,4 +1,9 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAdminDto } from 'src/admins/dto/createadmin.dto';
@@ -18,9 +23,6 @@ import { HttpService } from '@nestjs/axios';
 import { OtpService } from 'src/otp/otp.service';
 import { DomainsService } from 'src/domains/domains.service';
 import { Domain } from 'src/domains/entities/domain';
-import { Otp } from 'src/otp/entities/otp';
-import { CorsOptionsDelegate } from '@nestjs/common/interfaces/external/cors-options.interface';
-import { CreateOtpDto } from 'src/otp/dto/createotp.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +33,7 @@ export class AuthService {
 
     private readonly otpService: OtpService,
 
-    private readonly domainService : DomainsService,
+    private readonly domainService: DomainsService,
 
     @InjectRepository(Student)
     private StudentRepository: Repository<Student>,
@@ -58,10 +60,12 @@ export class AuthService {
     }
     const userDomain = createstudentdto.email.split('@')[1];
     const domains: Domain[] = await this.domainService.getAllDomains();
-    const domainNames = domains.map(domain => domain.domain);
+    const domainNames = domains.map((domain) => domain.domain);
     const domainExists = domainNames.includes(userDomain);
     if (!domainExists) {
-      throw new ForbiddenException(`Domain ${userDomain} is forbidden for this platform.`);
+      throw new ForbiddenException(
+        `Domain ${userDomain} is forbidden for this platform.`,
+      );
     }
     let imageUrl: string;
     if (file) {
@@ -78,7 +82,7 @@ export class AuthService {
       );
       imageUrl = response.data.data.url;
     }
-    await this.otpService.generateOTP(createstudentdto.email)
+    await this.otpService.generateOTP(createstudentdto.email);
     const hashedPassword = await bcrypt.hash(createstudentdto.password, 10);
     const user = this.StudentRepository.create({
       ...createstudentdto,
@@ -96,10 +100,6 @@ export class AuthService {
     return { user, accessToken };
   }
 
-  async verifyStudentOtp(createstudentdto:CreateStudentDto) {
-    await this.otpService.verifyStudentOTP(createstudentdto.otp,createstudentdto.email)
-  }
-
   async teacherSignup(
     createteacherdto: CreateTeacherDto,
     file: Express.Multer.File,
@@ -115,10 +115,12 @@ export class AuthService {
     }
     const userDomain = createteacherdto.email.split('@')[1];
     const domains: Domain[] = await this.domainService.getAllDomains();
-    const domainNames = domains.map(domain => domain.domain);
+    const domainNames = domains.map((domain) => domain.domain);
     const domainExists = domainNames.includes(userDomain);
     if (!domainExists) {
-      throw new ForbiddenException(`Domain ${userDomain} is forbidden for this platform.`);
+      throw new ForbiddenException(
+        `Domain ${userDomain} is forbidden for this platform.`,
+      );
     }
     let imageUrl: string;
     if (file) {
@@ -152,10 +154,6 @@ export class AuthService {
     return { user, accessToken };
   }
 
-  async verifyTeacherOtp(createteacherdto:CreateTeacherDto) {
-    await this.otpService.verifyTeacherOTP(createteacherdto.otp,createteacherdto.email)
-  }
-
   async adminSignup(createadmindto: CreateAdminDto, file: Express.Multer.File) {
     const existingUser = await this.AdminRepository.findOneBy({
       email: createadmindto.email,
@@ -168,10 +166,12 @@ export class AuthService {
     }
     const userDomain = createadmindto.email.split('@')[1];
     const domains: Domain[] = await this.domainService.getAllDomains();
-    const domainNames = domains.map(domain => domain.domain);
+    const domainNames = domains.map((domain) => domain.domain);
     const domainExists = domainNames.includes(userDomain);
     if (!domainExists) {
-      throw new ForbiddenException(`Domain ${userDomain} is forbidden for this platform.`);
+      throw new ForbiddenException(
+        `Domain ${userDomain} is forbidden for this platform.`,
+      );
     }
     let imageUrl: string;
     if (file) {
@@ -202,10 +202,6 @@ export class AuthService {
     return { user, accessToken };
   }
 
-  async verifyAdminOtp(createadmindto:CreateAdminDto) {
-    await this.otpService.verifyTeacherOTP(createadmindto.otp,createadmindto.email)
-  }
-
   async studentLogin(loginstudentdto: LoginStudentDto) {
     const user = await this.StudentRepository.findOneBy({
       email: loginstudentdto.email,
@@ -225,10 +221,10 @@ export class AuthService {
     }
     const payload = { email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
-    const loggedInUser = {email:user.email, password:user.password}
+    const loggedInUser = { email: user.email, password: user.password };
     return {
       loggedInUser,
-      accessToken
+      accessToken,
     };
   }
 
@@ -251,10 +247,10 @@ export class AuthService {
     }
     const payload = { email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
-    const loggedInUser = {email:user.email, password:user.password}
+    const loggedInUser = { email: user.email, password: user.password };
     return {
       loggedInUser,
-      accessToken
+      accessToken,
     };
   }
 
@@ -277,10 +273,10 @@ export class AuthService {
     }
     const payload = { email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
-    const loggedInUser = {email:user.email, password:user.password}
+    const loggedInUser = { email: user.email, password: user.password };
     return {
       loggedInUser,
-      accessToken
+      accessToken,
     };
   }
 }

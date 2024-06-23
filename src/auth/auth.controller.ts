@@ -16,10 +16,14 @@ import { LoginAdminDto } from 'src/admins/dto/loginadmin.dto';
 import { LoginTeacherDto } from 'src/teachers/dto/loginteacher.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
+import { OtpService } from 'src/otp/otp.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly otpService: OtpService,
+  ) {}
 
   @UseInterceptors(FileInterceptor('image'))
   @Post('/studentsignup')
@@ -93,30 +97,12 @@ export class AuthController {
     };
   }
 
-  @Post('/verifystudent')
-  async verifyStudent(@Body() createstudentdto: CreateStudentDto) {
-    await this.authService.verifyStudentOtp(createstudentdto)
+  @Post('/verify')
+  async verifyUser(email: string, code: string) {
+    await this.otpService.verifyOTP(email, code);
     return {
       status: HttpCode(HttpStatus.ACCEPTED),
-      message:"Student verified"
-    }
-  }
-
-  @Post('/verifyteacher')
-  async verifyTeacher(@Body() createteacherdto: CreateTeacherDto) {
-    await this.authService.verifyTeacherOtp(createteacherdto)
-    return {
-      status: HttpCode(HttpStatus.ACCEPTED),
-      message:"Teacher verified"
-    }
-  }
-
-  @Post('/verifyadmin')
-  async verifyAdmin(@Body() createadmindto: CreateAdminDto) {
-    await this.authService.verifyAdminOtp(createadmindto)
-    return {
-      status: HttpCode(HttpStatus.ACCEPTED),
-      message:"Admin verified"
-    }
+      message: 'User verified',
+    };
   }
 }

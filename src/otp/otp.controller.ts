@@ -12,7 +12,7 @@ export class OtpController {
     return {
       status: HttpCode(HttpStatus.CREATED),
       code,
-      message: 'OTP generated',
+      message: 'OTP generated and sent to your email.',
     };
-}
+  }
 }

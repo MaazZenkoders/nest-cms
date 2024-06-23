@@ -1,12 +1,12 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreateEnrollmentDto {
+export class CreateAssignedCoursesDto {
   @IsNotEmpty()
-  enrollment_date: Date;
+  assign_date: Date;
 
   @IsNotEmpty()
   @IsString()
-  student_id: string;
+  teacher_id: string;
 
   @IsNotEmpty()
   @IsString()
