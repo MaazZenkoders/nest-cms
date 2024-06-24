@@ -47,7 +47,6 @@ export class AuthService {
 
   async studentSignup(
     createstudentdto: CreateStudentDto,
-    file: Express.Multer.File,
   ) {
     const existingUser = await this.StudentRepository.findOneBy({
       email: createstudentdto.email,
@@ -67,27 +66,11 @@ export class AuthService {
         `Domain ${userDomain} is forbidden for this platform.`,
       );
     }
-    let imageUrl: string;
-    if (file) {
-      const form = new FormData();
-      form.append('image', file.buffer, file.originalname);
-      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
-      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
-      const response = await firstValueFrom(
-        this.httpService.post(uploadUrl, form, {
-          headers: {
-            ...form.getHeaders(),
-          },
-        }),
-      );
-      imageUrl = response.data.data.url;
-    }
-    await this.otpService.generateOTP(createstudentdto.email);
+    this.otpService.generateOTP(createstudentdto.email);
     const hashedPassword = await bcrypt.hash(createstudentdto.password, 10);
     const user = this.StudentRepository.create({
       ...createstudentdto,
       password: hashedPassword,
-      image_url: imageUrl,
       created_at: new Date(Date.now()),
       updated_at: new Date(Date.now()),
     });
@@ -102,7 +85,6 @@ export class AuthService {
 
   async teacherSignup(
     createteacherdto: CreateTeacherDto,
-    file: Express.Multer.File,
   ) {
     const existingUser = await this.TeacherRepository.findOneBy({
       email: createteacherdto.email,
@@ -122,25 +104,10 @@ export class AuthService {
         `Domain ${userDomain} is forbidden for this platform.`,
       );
     }
-    let imageUrl: string;
-    if (file) {
-      const form = new FormData();
-      form.append('image', file.buffer, file.originalname);
-      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
-      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
-      const response = await firstValueFrom(
-        this.httpService.post(uploadUrl, form, {
-          headers: {
-            ...form.getHeaders(),
-          },
-        }),
-      );
-      imageUrl = response.data.data.url;
-    }
+    this.otpService.generateOTP(createteacherdto.email);
     const hashedPassword = await bcrypt.hash(createteacherdto.password, 10);
     const user = this.TeacherRepository.create({
       ...createteacherdto,
-      image_url: imageUrl,
       password: hashedPassword,
       created_at: new Date(Date.now()),
       updated_at: new Date(Date.now()),
@@ -154,7 +121,7 @@ export class AuthService {
     return { user, accessToken };
   }
 
-  async adminSignup(createadmindto: CreateAdminDto, file: Express.Multer.File) {
+  async adminSignup(createadmindto: CreateAdminDto) {
     const existingUser = await this.AdminRepository.findOneBy({
       email: createadmindto.email,
     });
@@ -173,26 +140,11 @@ export class AuthService {
         `Domain ${userDomain} is forbidden for this platform.`,
       );
     }
-    let imageUrl: string;
-    if (file) {
-      const form = new FormData();
-      form.append('image', file.buffer, file.originalname);
-      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
-      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
-      const response = await firstValueFrom(
-        this.httpService.post(uploadUrl, form, {
-          headers: {
-            ...form.getHeaders(),
-          },
-        }),
-      );
-      imageUrl = response.data.data.url;
-    }
+    this.otpService.generateOTP(createadmindto.email);
     const hashedPassword = await bcrypt.hash(createadmindto.password, 10);
     const user = this.AdminRepository.create({
       ...createadmindto,
       password: hashedPassword,
-      image_url: imageUrl,
       created_at: new Date(Date.now()),
       updated_at: new Date(Date.now()),
     });
@@ -211,6 +163,9 @@ export class AuthService {
         'Student with these credentials doesnt exist.',
         HttpStatus.UNAUTHORIZED,
       );
+    }
+    if (user.is_suspended){
+      throw new ForbiddenException("You are suspended.")
     }
     const isPasswordValid = await bcrypt.compare(
       loginstudentdto.password,
@@ -237,6 +192,9 @@ export class AuthService {
         'Teacher with these credentials doesnt exist.',
         HttpStatus.UNAUTHORIZED,
       );
+    }
+    if (user.is_suspended){
+      throw new ForbiddenException("You are suspended.")
     }
     const isPasswordValid = await bcrypt.compare(
       loginteacherdto.password,
@@ -278,5 +236,24 @@ export class AuthService {
       loggedInUser,
       accessToken,
     };
+  }
+  
+  async uploadProfilePicture (file: Express.Multer.File) {
+    let imageUrl: string;
+    if (file) {
+      const form = new FormData();
+      form.append('image', file.buffer, file.originalname);
+      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
+      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+      const response = await firstValueFrom(
+        this.httpService.post(uploadUrl, form, {
+          headers: {
+            ...form.getHeaders(),
+          },
+        }),
+      );
+      imageUrl = response.data.data.url;
+    }
+    return imageUrl;
   }
 }

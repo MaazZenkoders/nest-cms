@@ -16,6 +16,7 @@ import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
 import { UpdateStudentDto } from './dto/updatestudent.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
 @UseGuards(RoleAuthorizationGuard)
 @Controller('students')
@@ -24,8 +25,8 @@ export class StudentsController {
 
   @Role('admin')
   @Get('/getAll')
-  async getAllStudents() {
-    const students = await this.studentService.getAllStudents();
+  async getAllStudents(@Body() paginationsearchdto: PaginationSearchDto) {
+    const students = await this.studentService.getAllStudents(paginationsearchdto);
     return {
       status: HttpCode(HttpStatus.OK),
       students,
@@ -44,7 +45,7 @@ export class StudentsController {
     };
   }
 
-  @Role('student')
+  // @Role('student')
   @Patch('/updateprofile/:email')
   async updateStudentProfile(
     @Param('email') email: string,

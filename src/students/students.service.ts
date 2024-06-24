@@ -1,11 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from './entities/student';
 import { UpdateStudentDto } from './dto/updatestudent.dto';
-import { firstValueFrom } from 'rxjs';
+import { async, firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
+import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
 @Injectable()
 export class StudentsService {
@@ -16,9 +17,28 @@ export class StudentsService {
     private readonly httpService: HttpService,
   ) {}
 
-  async getAllStudents() {
-    const students = await this.StudentRepository.find();
-    return students;
+  async getAllStudents(paginationsearchdto: PaginationSearchDto) {
+    try {
+      const { page, limit, search } = paginationsearchdto;
+      const query = this.StudentRepository.createQueryBuilder('students');
+      if (search) {
+        query.where(
+          'students.name LIKE :search OR students.email LIKE :search',
+          { search: `%${search}%` }
+        );
+      }
+      const [result, total] = await query
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getManyAndCount();
+
+      return {
+        data: result,
+        count: total,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async studentProfile(email: string) {

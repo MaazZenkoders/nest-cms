@@ -4,10 +4,10 @@ import { AssignedcoursesService } from './assignedcourses.service';
 import { AssignedCourses } from './entities/assignedcourses';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Course } from 'src/courses/entities/course';
-import { Student } from 'src/students/entities/student';
+import { Teacher } from 'src/teachers/entities/teacher';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Course, Student, AssignedCourses])],
+  imports: [TypeOrmModule.forFeature([Course, Teacher, AssignedCourses])],
   controllers: [AssignedcoursesController],
   providers: [AssignedcoursesService],
 })

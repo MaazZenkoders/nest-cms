@@ -25,13 +25,11 @@ export class AuthController {
     private readonly otpService: OtpService,
   ) {}
 
-  @UseInterceptors(FileInterceptor('image'))
   @Post('/studentsignup')
   async createStudent(
     @Body() createstudentdto: CreateStudentDto,
-    @UploadedFile() file: Express.Multer.File,
   ) {
-    const data = await this.authService.studentSignup(createstudentdto, file);
+    const data = await this.authService.studentSignup(createstudentdto);
     return {
       status: HttpCode(HttpStatus.CREATED),
       data,
@@ -39,13 +37,11 @@ export class AuthController {
     };
   }
 
-  @UseInterceptors(FileInterceptor('image'))
   @Post('/teachersignup')
   async createTeacher(
     @Body() createteacherdto: CreateTeacherDto,
-    @UploadedFile() file: Express.Multer.File,
   ) {
-    const data = await this.authService.teacherSignup(createteacherdto, file);
+    const data = await this.authService.teacherSignup(createteacherdto);
     return {
       status: HttpCode(HttpStatus.CREATED),
       data,
@@ -53,13 +49,11 @@ export class AuthController {
     };
   }
 
-  @UseInterceptors(FileInterceptor('image'))
   @Post('/adminsignup')
   async createAdmin(
     @Body() createadmindto: CreateAdminDto,
-    @UploadedFile() file: Express.Multer.File,
   ) {
-    const data = await this.authService.adminSignup(createadmindto, file);
+    const data = await this.authService.adminSignup(createadmindto);
     return {
       status: HttpCode(HttpStatus.CREATED),
       data,
@@ -104,5 +98,16 @@ export class AuthController {
       status: HttpCode(HttpStatus.ACCEPTED),
       message: 'User verified',
     };
+  }
+
+  @UseInterceptors(FileInterceptor('image'))
+  @Post('/uploadprofilepicture')
+  async uploadProfilePciture(@UploadedFile() file: Express.Multer.File) {
+    const profilePictureUrl = await this.authService.uploadProfilePicture(file)
+    return {
+      status: HttpCode(HttpStatus.CREATED),
+      profilePictureUrl,
+      message:"Profile picture uploaded successfully."
+    }
   }
 }

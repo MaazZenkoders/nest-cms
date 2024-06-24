@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { CreateEnrollmentDto } from './dto/createenrollment.dto';
 import { Student } from 'src/students/entities/student';
 import { Course } from 'src/courses/entities/course';
+import { async } from 'rxjs';
+import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
 @Injectable()
 export class EnrollmentsService {
@@ -56,6 +58,30 @@ export class EnrollmentsService {
     };
   }
 
+  async getAllEnrollments(paginationsearchdto: PaginationSearchDto) {
+    try {
+      const { page, limit, search } = paginationsearchdto;
+      const query = this.enrollmentRepository.createQueryBuilder('enrollments');
+      if (search) {
+        query.where(
+          'enrollments.student_id LIKE :search OR enrollments.course_code LIKE :search',
+          { search: `%${search}%` }
+        );
+      }
+      const [result, total] = await query
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getManyAndCount();
+
+      return {
+        data: result,
+        count: total,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async getEnrollmentsByStudentId(student_id: string) {
     const student = await this.studentRepository.findOne({
       where: { email: student_id },
@@ -95,6 +121,5 @@ export class EnrollmentsService {
       throw new ForbiddenException('Drop deadline has passed');
     }
     await this.enrollmentRepository.remove(enrollment);
-    return { message: 'Course successfully dropped' };
   }
 }

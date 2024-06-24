@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { DomainsService } from './domains.service';
 import { CreateDomainDto } from './dto/domain.dto';
@@ -14,7 +14,6 @@ import { CreateDomainDto } from './dto/domain.dto';
 export class DomainsController {
   constructor(private readonly domainService: DomainsService) {}
 
-  @UsePipes(new ValidationPipe())
   @Post('/create')
   async createDomain(@Body() createdomaindto: CreateDomainDto) {
     const domain = await this.domainService.createDomain(createdomaindto);
@@ -23,5 +22,14 @@ export class DomainsController {
       domain,
       message: 'Domain successfully created',
     };
+  }
+
+  @Delete('/:id')
+  async removeDomain(@Param('id') id:number) {
+    await this.domainService.removeDomain(id)
+    return {
+      status: HttpCode(HttpStatus.OK),
+      message:"Domain removed successfully."
+    }
   }
 }

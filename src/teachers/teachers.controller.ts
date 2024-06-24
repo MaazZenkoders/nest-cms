@@ -1,25 +1,32 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
+import { UpdateTeacherDto } from './dto/updateteacher.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
 UseGuards(RoleAuthorizationGuard);
-@Role('admin')
 @Controller('teachers')
 export class TeachersController {
   constructor(private readonly teacherService: TeachersService) {}
 
+  @Role('admin')
   @Get('/getAll')
-  async getAllTeachers() {
-    const teachers = await this.teacherService.getAllTeachers();
+  async getAllTeachers(@Body() paginationsearchdto: PaginationSearchDto) {
+    const teachers = await this.teacherService.getAllTeachers(paginationsearchdto);
     return {
       status: HttpCode(HttpStatus.OK),
       teachers,
@@ -27,9 +34,10 @@ export class TeachersController {
     };
   }
 
+  @Role('admin','teacher')
   @Get('/:email')
-  async getStudentById(@Param('email') email: string) {
-    const teacher = await this.teacherService.getTeacherById(email);
+  async getTeacherById(@Param('email') email: string) {
+    const teacher = await this.teacherService.teacherProfile(email);
     return {
       status: HttpCode(HttpStatus.OK),
       teacher,
@@ -37,8 +45,41 @@ export class TeachersController {
     };
   }
 
+  @Role('teacher')
+  @Patch('/updateprofile/:email')
+  async updateTeacherProfile(
+    @Param('email') email: string,
+    @Body() updateteacherdto: UpdateTeacherDto,
+  ) {
+    const updatedProfile = await this.teacherService.updateTeacherProfile(
+      email,
+      updateteacherdto,
+    );
+    return {
+      status: HttpCode(HttpStatus.CREATED),
+      updatedProfile,
+      message: 'Profile updated successfully.',
+    };
+  }
+
+  @Role('student')
+  @UseInterceptors(FileInterceptor('image'))
+  @Patch('/updateprofilepicture/:email')
+  async updateTeacherProfilePicture(
+    @Param('email') email: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const updatedProfilePicture =
+      await this.teacherService.updateTeacherProfilePicture(email, file);
+    return {
+      status: HttpCode(HttpStatus.CREATED),
+      updatedProfilePicture,
+      message: 'Profile picture updated successfully.',
+    };
+  }
+
   @Delete('/:email')
-  async deleteStudentById(@Param('email') email: string) {
+  async deleteTeacherById(@Param('email') email: string) {
     await this.teacherService.deleteTeacherById(email);
     return {
       status: HttpCode(HttpStatus.OK),

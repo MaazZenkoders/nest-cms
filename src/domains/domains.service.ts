@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import { CreateDomainDto } from './dto/domain.dto';
@@ -37,5 +38,13 @@ export class DomainsService {
   async getAllDomains() {
     const domains = await this.DomainRepository.find();
     return domains;
+  }
+
+  async removeDomain(id: number) {
+    const existingDomain = await this.DomainRepository.findOneBy({id})
+    if (!existingDomain){
+      throw new NotFoundException("Domain not found")
+    }
+    await this.DomainRepository.remove(existingDomain)
   }
 }

@@ -13,6 +13,7 @@ import { EnrollmentsService } from './enrollments.service';
 import { CreateEnrollmentDto } from './dto/createenrollment.dto';
 import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
+import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
 @UseGuards(RoleAuthorizationGuard)
 @Controller('enrollments')
@@ -31,7 +32,18 @@ export class EnrollmentsController {
     };
   }
 
-  @Role('student')
+  @Role('admin')
+  @Get('/getAll')
+  async getAllEnrollments(@Body() paginationsearchdto: PaginationSearchDto) {
+    const enrollments = await this.enrollmentService.getAllEnrollments(paginationsearchdto)
+    return {
+      status: HttpCode(HttpStatus.OK),
+      enrollments,
+      message: "All enrollments retrieved successfully."
+    }
+  }
+
+  @Role('student','admin')
   @Get('/:student_id')
   async getEnrollmentsByStudentId(@Param('student_id') student_id: string) {
     const enrollments =
