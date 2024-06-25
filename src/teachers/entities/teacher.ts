@@ -1,4 +1,6 @@
+import { Appointments } from 'src/appointments/entities/appointments';
 import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
+import { Slots } from 'src/slots/entities/slots';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'teachers' })
@@ -41,4 +43,10 @@ export class Teacher {
 
   @OneToMany(() => AssignedCourses, (assignedcourse) => assignedcourse.teacher)
   assignedcourses: AssignedCourses[];
+
+  @OneToMany(() => Appointments, (appointment) => appointment.teacher)
+  appointments: Appointments[];
+
+  @OneToMany(() => Slots, (slot) => slot.teacher)
+  slots: Slots[];
 }

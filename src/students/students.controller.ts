@@ -45,7 +45,7 @@ export class StudentsController {
     };
   }
 
-  // @Role('student')
+  @Role('student')
   @Patch('/updateprofile/:email')
   async updateStudentProfile(
     @Param('email') email: string,

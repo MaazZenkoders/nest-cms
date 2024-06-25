@@ -22,6 +22,10 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
 import { Enrollment } from './enrollments/entities/enrollments';
 import { AssignedcoursesModule } from './assignedcourses/assignedcourses.module';
 import { AssignedCourses } from './assignedcourses/entities/assignedcourses';
+import { SlotsModule } from './slots/slots.module';
+import { Slots } from './slots/entities/slots';
+import { AppointmentsModule } from './appointments/appointments.module';
+import { Appointments } from './appointments/entities/appointments';
 
 @Module({
   imports: [
@@ -42,6 +46,8 @@ import { AssignedCourses } from './assignedcourses/entities/assignedcourses';
         Course,
         Enrollment,
         AssignedCourses,
+        Slots,
+        Appointments,
       ],
       synchronize: true,
     }),
@@ -59,6 +65,8 @@ import { AssignedCourses } from './assignedcourses/entities/assignedcourses';
       Course,
       Enrollment,
       AssignedCourses,
+      Slots,
+      Appointments
     ]),
     MulterModule.register({
       dest: './uploads',
@@ -72,6 +80,8 @@ import { AssignedCourses } from './assignedcourses/entities/assignedcourses';
     CoursesModule,
     EnrollmentsModule,
     AssignedcoursesModule,
+    SlotsModule,
+    AppointmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
