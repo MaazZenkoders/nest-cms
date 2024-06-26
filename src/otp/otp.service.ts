@@ -3,14 +3,16 @@ import { Otp } from './entities/otp';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
-import * as nodemailer from 'nodemailer';
 import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { Admin } from 'src/admins/entities/admin';
+import { EmailsService } from 'src/emails/emails.service';
 
 @Injectable()
 export class OtpService {
   constructor(
+    private readonly emailService: EmailsService,
+
     @InjectRepository(Otp)
     private readonly otpRepository: Repository<Otp>,
 
@@ -32,7 +34,7 @@ export class OtpService {
       expires_at: new Date(Date.now() + 1000 * 60 * 60),
     });
     await this.otpRepository.save(otp);
-    await this.sendOTPEmail(email, code);
+    await this.emailService.sendOTPEmail(email,code)
     return code;
   }
 
@@ -67,22 +69,5 @@ export class OtpService {
       return;
     }
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-  }
-
-  private async sendOTPEmail(email: string, code: string) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'maaz05.zenkoders@gmail.com',
-        pass: 'xwpc daco cflp lewl',
-      },
-    });
-    const mailOptions = {
-      from: 'maaz05.zenkoders@gmail.com',
-      to: email,
-      subject: 'Your OTP Code',
-      text: `Your OTP code is ${code}. Do not share it with anyone. It will expire in 5 minutes.`,
-    };
-    await transporter.sendMail(mailOptions);
   }
 }

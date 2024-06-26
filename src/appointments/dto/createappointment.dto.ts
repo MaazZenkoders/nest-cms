@@ -1,23 +1,27 @@
-import {
-    IsString,
-    IsNotEmpty,
-    IsBoolean,
-  } from 'class-validator';
-  
-  export class CreateAppointmentDto {
-    @IsNotEmpty()
-    @IsString()
-    teacher_id: string;
-  
-    @IsNotEmpty()
-    @IsString()
-    slot_id: number;
-  
-    @IsNotEmpty()
-    @IsString()
-    student_id: string;
+import { IsString, IsNotEmpty, IsBoolean, IsEnum } from 'class-validator';
+import { MeetingStatus } from 'src/enums/meetingstatus';
 
-    @IsNotEmpty()
-    @IsBoolean()
-    rejected: boolean = false;
+export class CreateAppointmentDto {
+  @IsNotEmpty()
+  @IsString()
+  teacher_id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  student_id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  start_time: string;
+
+  @IsNotEmpty()
+  @IsString()
+  end_time: string;
+
+  @IsNotEmpty()
+  date:Date
+
+  @IsNotEmpty()
+  @IsEnum(MeetingStatus)
+  status: MeetingStatus;
 }

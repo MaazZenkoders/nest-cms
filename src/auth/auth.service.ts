@@ -164,7 +164,7 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    if (user.is_suspended){
+    if (user.is_suspended===true){
       throw new ForbiddenException("You are suspended.")
     }
     const isPasswordValid = await bcrypt.compare(
@@ -193,7 +193,7 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    if (user.is_suspended){
+    if (user.is_suspended===true){
       throw new ForbiddenException("You are suspended.")
     }
     const isPasswordValid = await bcrypt.compare(

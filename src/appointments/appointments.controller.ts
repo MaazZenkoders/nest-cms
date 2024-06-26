@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/createappointment.dto';
-import { DeleteAppointmentDto } from './dto/deleteappointment.dto';
+import { ApproveRejectAppointmentDto } from './dto/approvereject.dto';
 import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
 
@@ -46,14 +46,14 @@ export class AppointmentsController {
 
   @Role('teacher')
   @Post('/reject/:id')
-  async rejectAppointment(
-    @Body() deleteappointmentdto: DeleteAppointmentDto,
+  async approveRejectAppointment(
+    @Body() approverejectappointmentdto: ApproveRejectAppointmentDto,
     @Param('id') id: number,
   ) {
-    await this.appointmentsService.deleteAppointment(id, deleteappointmentdto);
+    await this.appointmentsService.approveRejectAppointment(id, approverejectappointmentdto);
     return {
       status: HttpCode(HttpStatus.OK),
-      message: 'Appointment rejected successfully',
+      message: 'Appointment status updated successfully',
     };
   }
 }

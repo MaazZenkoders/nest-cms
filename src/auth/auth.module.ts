@@ -13,6 +13,7 @@ import { OtpModule } from 'src/otp/otp.module';
 import { OtpService } from 'src/otp/otp.service';
 import { DomainsService } from 'src/domains/domains.service';
 import { DomainsModule } from 'src/domains/domains.module';
+import { EmailsService } from 'src/emails/emails.service';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { DomainsModule } from 'src/domains/domains.module';
     TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, OtpService, DomainsService],
+  providers: [AuthService, OtpService, DomainsService,EmailsService],
 })
 export class AuthModule {}

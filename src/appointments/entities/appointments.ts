@@ -1,4 +1,4 @@
-import { Slots } from 'src/slots/entities/slots';
+import { MeetingStatus } from 'src/enums/meetingstatus';
 import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -8,8 +8,24 @@ export class Appointments {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({default: false})
-  rejected: boolean;
+  @Column({
+    type: 'enum',
+    enum: MeetingStatus,
+    default: MeetingStatus.pending,
+  })
+  status: MeetingStatus;
+
+  @Column()
+  start_time:string;
+
+  @Column()
+  end_time: string;
+
+  @Column({type:'date'})
+  date: Date
+
+  @Column({ type: 'timestamp' })
+  created_at: Date;
 
   @ManyToOne(() => Student, (student) => student.appointments)
   @JoinColumn({ name: 'student_id' })
@@ -18,8 +34,4 @@ export class Appointments {
   @ManyToOne(() => Teacher, (teacher) => teacher.appointments)
   @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
-
-  @OneToOne(() => Slots)
-  @JoinColumn({name : 'slot_id'})
-  slots: Slots
 }
