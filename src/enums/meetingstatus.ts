@@ -1,6 +1,6 @@
 export enum MeetingStatus {
-    pending = 'PENDING',
-    approved = 'APPROVED',
-    rejected = 'REJECTED',
-    postponed = 'POSTPONED',
-  }
+  pending = 'PENDING',
+  approved = 'APPROVED',
+  rejected = 'REJECTED',
+  postponed = 'POSTPONED',
+}

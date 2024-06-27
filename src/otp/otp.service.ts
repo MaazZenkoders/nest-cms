@@ -34,7 +34,7 @@ export class OtpService {
       expires_at: new Date(Date.now() + 1000 * 60 * 60),
     });
     await this.otpRepository.save(otp);
-    await this.emailService.sendOTPEmail(email,code)
+    await this.emailService.sendOTPEmail(email, code);
     return code;
   }
 

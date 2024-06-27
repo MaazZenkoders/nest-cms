@@ -35,15 +35,16 @@ export class EnrollmentsController {
   @Role('admin')
   @Get('/getAll')
   async getAllEnrollments(@Body() paginationsearchdto: PaginationSearchDto) {
-    const enrollments = await this.enrollmentService.getAllEnrollments(paginationsearchdto)
+    const enrollments =
+      await this.enrollmentService.getAllEnrollments(paginationsearchdto);
     return {
       status: HttpCode(HttpStatus.OK),
       enrollments,
-      message: "All enrollments retrieved successfully."
-    }
+      message: 'All enrollments retrieved successfully.',
+    };
   }
 
-  @Role('student','admin')
+  @Role('student', 'admin')
   @Get('/:student_id')
   async getEnrollmentsByStudentId(@Param('student_id') student_id: string) {
     const enrollments =

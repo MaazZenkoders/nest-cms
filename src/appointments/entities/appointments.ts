@@ -1,7 +1,15 @@
 import { MeetingStatus } from 'src/enums/meetingstatus';
 import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'appointments' })
 export class Appointments {
@@ -16,13 +24,13 @@ export class Appointments {
   status: MeetingStatus;
 
   @Column()
-  start_time:string;
+  start_time: string;
 
   @Column()
   end_time: string;
 
-  @Column({type:'date'})
-  date: Date
+  @Column({ type: 'date' })
+  date: Date;
 
   @Column({ type: 'timestamp' })
   created_at: Date;

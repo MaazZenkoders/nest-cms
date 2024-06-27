@@ -25,11 +25,11 @@ export class DomainsController {
   }
 
   @Delete('/:id')
-  async removeDomain(@Param('id') id:number) {
-    await this.domainService.removeDomain(id)
+  async removeDomain(@Param('id') id: number) {
+    await this.domainService.removeDomain(id);
     return {
       status: HttpCode(HttpStatus.OK),
-      message:"Domain removed successfully."
-    }
+      message: 'Domain removed successfully.',
+    };
   }
 }

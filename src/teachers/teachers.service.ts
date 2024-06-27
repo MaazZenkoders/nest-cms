@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Teacher } from './entities/teacher';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,7 +11,6 @@ import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
-
 
 @Injectable()
 export class TeachersService {
@@ -25,7 +28,7 @@ export class TeachersService {
       if (search) {
         query.where(
           'teachers.name LIKE :search OR teachers.email LIKE :search',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
       const [result, total] = await query

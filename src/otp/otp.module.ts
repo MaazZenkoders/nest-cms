@@ -10,7 +10,7 @@ import { EmailsService } from 'src/emails/emails.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Otp, Admin, Student, Teacher])],
-  providers: [OtpService,EmailsService],
+  providers: [OtpService, EmailsService],
   controllers: [OtpController],
 })
 export class OtpModule {}

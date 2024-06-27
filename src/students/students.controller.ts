@@ -26,7 +26,8 @@ export class StudentsController {
   @Role('admin')
   @Get('/getAll')
   async getAllStudents(@Body() paginationsearchdto: PaginationSearchDto) {
-    const students = await this.studentService.getAllStudents(paginationsearchdto);
+    const students =
+      await this.studentService.getAllStudents(paginationsearchdto);
     return {
       status: HttpCode(HttpStatus.OK),
       students,

@@ -24,6 +24,6 @@ import { EmailsService } from 'src/emails/emails.service';
     TypeOrmModule.forFeature([Student, Teacher, Admin, Domain, Otp]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, OtpService, DomainsService,EmailsService],
+  providers: [AuthService, OtpService, DomainsService, EmailsService],
 })
 export class AuthModule {}

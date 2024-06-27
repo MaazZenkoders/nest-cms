@@ -6,7 +6,7 @@ import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Student, Teacher])],
+  imports: [TypeOrmModule.forFeature([Student, Teacher])],
   providers: [AdminsService],
   controllers: [AdminsController],
 })

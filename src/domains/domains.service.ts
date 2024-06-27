@@ -41,10 +41,10 @@ export class DomainsService {
   }
 
   async removeDomain(id: number) {
-    const existingDomain = await this.DomainRepository.findOneBy({id})
-    if (!existingDomain){
-      throw new NotFoundException("Domain not found")
+    const existingDomain = await this.DomainRepository.findOneBy({ id });
+    if (!existingDomain) {
+      throw new NotFoundException('Domain not found');
     }
-    await this.DomainRepository.remove(existingDomain)
+    await this.DomainRepository.remove(existingDomain);
   }
 }

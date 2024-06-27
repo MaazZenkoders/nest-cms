@@ -56,21 +56,27 @@ export class CoursesController {
   @Role('teacher')
   @Delete('/:course_code')
   async deleteCourse(@Param('course_code') course_code: string) {
-    await this.courseService.deleteCourse(course_code)
+    await this.courseService.deleteCourse(course_code);
     return {
       status: HttpCode(HttpStatus.OK),
-      message: 'Course deleted successfully.'
-    }
+      message: 'Course deleted successfully.',
+    };
   }
 
   @Role('teacher')
   @Get()
-  async getStudentsInYourCourse(@Param('email') email: string , @Param('course_code') course_code: string) {
-    const enrolledStudents = await this.courseService.getStudentsInYourCourse(email, course_code)
+  async getStudentsInYourCourse(
+    @Param('email') email: string,
+    @Param('course_code') course_code: string,
+  ) {
+    const enrolledStudents = await this.courseService.getStudentsInYourCourse(
+      email,
+      course_code,
+    );
     return {
       status: HttpCode(HttpStatus.OK),
       enrolledStudents,
-      message:"Students enrolled in your course retrieved successfully."
-    } 
+      message: 'Students enrolled in your course retrieved successfully.',
+    };
   }
 }

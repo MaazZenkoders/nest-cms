@@ -8,8 +8,8 @@ import { Teacher } from 'src/teachers/entities/teacher';
 import { EmailsService } from 'src/emails/emails.service';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Appointments, Student, Teacher])],
-  providers: [AppointmentsService,EmailsService],
-  controllers: [AppointmentsController]
+  imports: [TypeOrmModule.forFeature([Appointments, Student, Teacher])],
+  providers: [AppointmentsService, EmailsService],
+  controllers: [AppointmentsController],
 })
 export class AppointmentsModule {}

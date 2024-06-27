@@ -45,9 +45,7 @@ export class AuthService {
     private AdminRepository: Repository<Admin>,
   ) {}
 
-  async studentSignup(
-    createstudentdto: CreateStudentDto,
-  ) {
+  async studentSignup(createstudentdto: CreateStudentDto) {
     const existingUser = await this.StudentRepository.findOneBy({
       email: createstudentdto.email,
     });
@@ -83,9 +81,7 @@ export class AuthService {
     return { user, accessToken };
   }
 
-  async teacherSignup(
-    createteacherdto: CreateTeacherDto,
-  ) {
+  async teacherSignup(createteacherdto: CreateTeacherDto) {
     const existingUser = await this.TeacherRepository.findOneBy({
       email: createteacherdto.email,
     });
@@ -164,8 +160,8 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    if (user.is_suspended===true){
-      throw new ForbiddenException("You are suspended.")
+    if (user.is_suspended === true) {
+      throw new ForbiddenException('You are suspended.');
     }
     const isPasswordValid = await bcrypt.compare(
       loginstudentdto.password,
@@ -193,8 +189,8 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    if (user.is_suspended===true){
-      throw new ForbiddenException("You are suspended.")
+    if (user.is_suspended === true) {
+      throw new ForbiddenException('You are suspended.');
     }
     const isPasswordValid = await bcrypt.compare(
       loginteacherdto.password,
@@ -237,8 +233,8 @@ export class AuthService {
       accessToken,
     };
   }
-  
-  async uploadProfilePicture (file: Express.Multer.File) {
+
+  async uploadProfilePicture(file: Express.Multer.File) {
     let imageUrl: string;
     if (file) {
       const form = new FormData();

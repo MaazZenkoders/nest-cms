@@ -1,5 +1,6 @@
 import { Appointments } from 'src/appointments/entities/appointments';
 import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
+import { Chat } from 'src/chats/entities/chats';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'teachers' })
@@ -45,4 +46,10 @@ export class Teacher {
 
   @OneToMany(() => Appointments, (appointment) => appointment.teacher)
   appointments: Appointments[];
+
+  @OneToMany(() => Chat, (chat) => chat.senderTeacher)
+  sentMessages: Chat[];
+
+  @OneToMany(() => Chat, (chat) => chat.receiverTeacher)
+  receivedMessages: Chat[];
 }

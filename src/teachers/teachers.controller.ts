@@ -26,7 +26,8 @@ export class TeachersController {
   @Role('admin')
   @Get('/getAll')
   async getAllTeachers(@Body() paginationsearchdto: PaginationSearchDto) {
-    const teachers = await this.teacherService.getAllTeachers(paginationsearchdto);
+    const teachers =
+      await this.teacherService.getAllTeachers(paginationsearchdto);
     return {
       status: HttpCode(HttpStatus.OK),
       teachers,
@@ -34,7 +35,7 @@ export class TeachersController {
     };
   }
 
-  @Role('admin','teacher')
+  @Role('admin', 'teacher')
   @Get('/:email')
   async getTeacherById(@Param('email') email: string) {
     const teacher = await this.teacherService.teacherProfile(email);

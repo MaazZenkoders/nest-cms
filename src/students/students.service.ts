@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from './entities/student';
 import { UpdateStudentDto } from './dto/updatestudent.dto';
-import { async, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
@@ -24,7 +28,7 @@ export class StudentsService {
       if (search) {
         query.where(
           'students.name LIKE :search OR students.email LIKE :search',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
       const [result, total] = await query

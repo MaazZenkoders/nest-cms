@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -45,12 +44,15 @@ export class AppointmentsController {
   }
 
   @Role('teacher')
-  @Post('/reject/:id')
+  @Post('/approvereject/:id')
   async approveRejectAppointment(
     @Body() approverejectappointmentdto: ApproveRejectAppointmentDto,
     @Param('id') id: number,
   ) {
-    await this.appointmentsService.approveRejectAppointment(id, approverejectappointmentdto);
+    await this.appointmentsService.approveRejectAppointment(
+      id,
+      approverejectappointmentdto,
+    );
     return {
       status: HttpCode(HttpStatus.OK),
       message: 'Appointment status updated successfully',

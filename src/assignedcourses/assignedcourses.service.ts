@@ -59,11 +59,12 @@ export class AssignedcoursesService {
   async getAllAssignedCourses(paginationsearchdto: PaginationSearchDto) {
     try {
       const { page, limit, search } = paginationsearchdto;
-      const query = this.assignedCoursesRepository.createQueryBuilder('assigned_courses');
+      const query =
+        this.assignedCoursesRepository.createQueryBuilder('assigned_courses');
       if (search) {
         query.where(
           'assigned_courses.teacher_id LIKE :search OR assigned_courses.course_code  LIKE :search',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
       const [result, total] = await query
@@ -96,25 +97,25 @@ export class AssignedcoursesService {
 
   async deleteAssignedCourse(teacher_id: string, course_code: string) {
     const teacher = await this.teacherRepository.findOne({
-        where: { email: teacher_id },
-      });
-      if (!teacher) {
-        throw new NotFoundException('Teacher not found');
-      }
-      const course = await this.courseRepository.findOne({
-        where: { course_code: course_code },
-      });
-      if (!course) {
-        throw new NotFoundException('Course not found');
-      }
-      const assignedCourse = await this.assignedCoursesRepository.findOne({
-        where: { teacher: teacher, course: course },
-        relations: ['course'],
-      });
-      if (!assignedCourse) {
-        throw new NotFoundException('Assigned course not found');
-      }
-      await this.assignedCoursesRepository.remove(assignedCourse);
-      return { message: 'Course assignment successfully deleted.' }
-}
+      where: { email: teacher_id },
+    });
+    if (!teacher) {
+      throw new NotFoundException('Teacher not found');
+    }
+    const course = await this.courseRepository.findOne({
+      where: { course_code: course_code },
+    });
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+    const assignedCourse = await this.assignedCoursesRepository.findOne({
+      where: { teacher: teacher, course: course },
+      relations: ['course'],
+    });
+    if (!assignedCourse) {
+      throw new NotFoundException('Assigned course not found');
+    }
+    await this.assignedCoursesRepository.remove(assignedCourse);
+    return { message: 'Course assignment successfully deleted.' };
+  }
 }

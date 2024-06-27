@@ -56,7 +56,7 @@ export class CoursesService {
       if (search) {
         query.where(
           'courses.name LIKE :search OR courses.course_code LIKE :search',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
       const [result, total] = await query
@@ -90,43 +90,52 @@ export class CoursesService {
       where: { course: course },
       relations: ['course'],
     });
-    if(existingEnrollment){
-      throw new BadRequestException("This course cannot be deleted because enrollments are already in progress.")
+    if (existingEnrollment) {
+      throw new BadRequestException(
+        'This course cannot be deleted because enrollments are already in progress.',
+      );
     }
-    await this.courseRepository.remove(course)
+    await this.courseRepository.remove(course);
   }
 
-  async getStudentsInYourCourse(email: string ,course_code: string) {
-    const teacher = await this.teacherRepository.findOneBy({ email })
-    if(!teacher){
-      throw new NotFoundException('Teacher not found')
+  async getStudentsInYourCourse(email: string, course_code: string) {
+    const teacher = await this.teacherRepository.findOneBy({ email });
+    if (!teacher) {
+      throw new NotFoundException('Teacher not found');
     }
     const course = await this.courseRepository.findOneBy({ course_code });
     if (!course) {
       throw new NotFoundException('Course not found');
     }
-    const existingAssignedCourse = await this.assignedCoursesRepoistory.findOne({
-      where : {course:course, teacher:teacher },
-      relations : ['teacher', 'course'],
-      select:{
-        id: true,
-        assign_date: true,
-        teacher: {
-          email: true,
+    const existingAssignedCourse = await this.assignedCoursesRepoistory.findOne(
+      {
+        where: { course: course, teacher: teacher },
+        relations: ['teacher', 'course'],
+        select: {
+          id: true,
+          assign_date: true,
+          teacher: {
+            email: true,
+          },
+          course: {
+            course_code: true,
+          },
         },
-        course:{
-          course_code: true
-        }
-      }
-    })
+      },
+    );
     const existingEnrolledCourse = await this.enrollmentRepository.findOne({
-      where: { course: {course_code: existingAssignedCourse.course.course_code}},
-      relations : ['course']
+      where: {
+        course: { course_code: existingAssignedCourse.course.course_code },
+      },
+      relations: ['course'],
     });
     const enrolledStudents = await this.enrollmentRepository.findOne({
-      where : {student: existingEnrolledCourse.student, course:existingEnrolledCourse.course},
-      relations : ['student','course']
-    })
+      where: {
+        student: existingEnrolledCourse.student,
+        course: existingEnrolledCourse.course,
+      },
+      relations: ['student', 'course'],
+    });
     return enrolledStudents;
   }
 }

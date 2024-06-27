@@ -4,7 +4,7 @@ import { Transporter } from 'nodemailer';
 
 @Injectable()
 export class EmailsService {
-    private transporter: Transporter;
+  private transporter: Transporter;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -28,17 +28,16 @@ export class EmailsService {
   }
 
   async sendAppointmentEmail(email: string, appointmentDetails: any) {
-    const { student, teacher, start_time, end_time } = appointmentDetails;
+    const { student, teacher, status } = appointmentDetails;
     const mailOptions = {
       from: 'maaz05.zenkoders@gmail.com',
       to: email,
       subject: 'Appointment Confirmation',
-      text: `Dear ${student}, your appointment with ${teacher} is confirmed from ${start_time} to ${end_time}.`,
+      text: `Dear <strong>${student}</strong>, your appointment with ${teacher} is ${status}.`,
       html: `<p>Dear ${student},</p>
-             <p>Your appointment with <strong>${teacher}</strong> is confirmed from <strong>${start_time}</strong> to <strong>${end_time}</strong>.</p>
+             <p>Your appointment with <strong>${teacher}</strong> is <strong>${status}</strong>.</p>
              <p>Thank you.</p>`,
     };
     await this.transporter.sendMail(mailOptions);
   }
 }
-

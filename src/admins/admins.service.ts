@@ -19,8 +19,8 @@ export class AdminsService {
     if (!student) {
       throw new NotFoundException(`Student with email ${email} not found`);
     }
-    const suspendedStudent = { ...student, is_suspended:true};
-    await this.StudentRepository.update(email, suspendedStudent)
+    const suspendedStudent = { ...student, is_suspended: true };
+    await this.StudentRepository.update(email, suspendedStudent);
     return suspendedStudent;
   }
 
@@ -29,8 +29,8 @@ export class AdminsService {
     if (!teacher) {
       throw new NotFoundException(`Student with email ${email} not found`);
     }
-    const suspendedTeacher = { ...teacher, is_suspended:true};
-    await this.teacherRepository.update(email, suspendedTeacher)
+    const suspendedTeacher = { ...teacher, is_suspended: true };
+    await this.teacherRepository.update(email, suspendedTeacher);
     return suspendedTeacher;
   }
 }

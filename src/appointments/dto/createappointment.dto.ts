@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsBoolean, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
 import { MeetingStatus } from 'src/enums/meetingstatus';
 
 export class CreateAppointmentDto {
@@ -19,7 +19,7 @@ export class CreateAppointmentDto {
   end_time: string;
 
   @IsNotEmpty()
-  date:Date
+  date: Date;
 
   @IsNotEmpty()
   @IsEnum(MeetingStatus)

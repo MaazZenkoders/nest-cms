@@ -8,7 +8,9 @@ import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
 import { Teacher } from 'src/teachers/entities/teacher';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Course, Enrollment, AssignedCourses, Teacher])],
+  imports: [
+    TypeOrmModule.forFeature([Course, Enrollment, AssignedCourses, Teacher]),
+  ],
   providers: [CoursesService],
   controllers: [CoursesController],
 })

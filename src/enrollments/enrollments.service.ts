@@ -65,7 +65,7 @@ export class EnrollmentsService {
       if (search) {
         query.where(
           'enrollments.student_id LIKE :search OR enrollments.course_code LIKE :search',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
       const [result, total] = await query

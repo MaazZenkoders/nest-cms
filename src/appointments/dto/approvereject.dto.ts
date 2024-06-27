@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 import { MeetingStatus } from 'src/enums/meetingstatus';
 
 export class ApproveRejectAppointmentDto {

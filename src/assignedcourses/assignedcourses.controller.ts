@@ -1,5 +1,5 @@
 import {
-    Body,
+  Body,
   Controller,
   Delete,
   Get,
@@ -39,9 +39,13 @@ export class AssignedcoursesController {
 
   @Role('admin')
   @Get('/getAll')
-  async getAllAssignedCourses(@Body() paginationsearchdto: PaginationSearchDto) {
+  async getAllAssignedCourses(
+    @Body() paginationsearchdto: PaginationSearchDto,
+  ) {
     const assignedCourses =
-      await this.assignedCoursesService.getAllAssignedCourses(paginationsearchdto);
+      await this.assignedCoursesService.getAllAssignedCourses(
+        paginationsearchdto,
+      );
     return {
       status: HttpCode(HttpStatus.OK),
       assignedCourses,
@@ -49,7 +53,7 @@ export class AssignedcoursesController {
     };
   }
 
-  @Role('admin','teacher')
+  @Role('admin', 'teacher')
   @Get('/:teacher_id')
   async getEnrollmentsByStudentId(@Param('teacher_id') teacher_id: string) {
     const assignCourses =
