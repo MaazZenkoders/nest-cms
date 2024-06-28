@@ -25,8 +25,9 @@ import { AssignedCourses } from './assignedcourses/entities/assignedcourses';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { Appointments } from './appointments/entities/appointments';
 import { EmailsModule } from './emails/emails.module';
+import { ChatMessagesModule } from './chat-messages/chat-messages.module';
+import { ChatMessages } from './chat-messages/entities/chat-messages';
 import { ChatsModule } from './chats/chats.module';
-import { Chat } from './chats/entities/chats';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { Chat } from './chats/entities/chats';
         Enrollment,
         AssignedCourses,
         Appointments,
-        Chat,
+        ChatMessages,
       ],
       synchronize: true,
     }),
@@ -67,7 +68,7 @@ import { Chat } from './chats/entities/chats';
       Enrollment,
       AssignedCourses,
       Appointments,
-      Chat,
+      ChatMessages,
     ]),
     MulterModule.register({
       dest: './uploads',
@@ -83,6 +84,7 @@ import { Chat } from './chats/entities/chats';
     AssignedcoursesModule,
     AppointmentsModule,
     EmailsModule,
+    ChatMessagesModule,
     ChatsModule,
   ],
   controllers: [AppController],

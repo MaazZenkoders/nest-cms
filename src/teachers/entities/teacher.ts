@@ -1,6 +1,6 @@
 import { Appointments } from 'src/appointments/entities/appointments';
 import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
-import { Chat } from 'src/chats/entities/chats';
+import { Chat } from 'src/chat-messages/entities/chats';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'teachers' })
