@@ -6,9 +6,10 @@ import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { ChatMessagesService } from './chat-messages.service';
 import { ChatMessagesGateway } from './chat-messages.gateway';
+import { Chats } from 'src/chats/entities/chats';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChatMessages, Student, Teacher])],
+  imports: [TypeOrmModule.forFeature([ChatMessages, Student, Teacher, Chats])],
   providers: [ChatMessagesService, ChatMessagesGateway],
   controllers: [ChatMessagesController],
 })

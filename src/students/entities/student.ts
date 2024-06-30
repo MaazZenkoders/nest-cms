@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Enrollment } from 'src/enrollments/entities/enrollments';
 import { Appointments } from 'src/appointments/entities/appointments';
 import { ChatMessages } from 'src/chat-messages/entities/chat-messages';
+import { Chats } from 'src/chats/entities/chats';
 
 @Entity({ name: 'students' })
 export class Student {
@@ -47,9 +48,12 @@ export class Student {
   @OneToMany(() => Appointments, (appointment) => appointment.student)
   appointments: Appointments[];
 
-  @OneToMany(() => ChatMessage, (ChatMessage) => ChatMessage.senderStudent )
+  @OneToMany(() => ChatMessages, (chatMessage) => chatMessage.senderStudent)
   sentMessages: ChatMessages[];
 
-  @OneToMany(() => Chat, (chat) => chat.receiverStudent)
+  @OneToMany(() => ChatMessages, (chatMessage) => chatMessage.receiverStudent)
   receivedMessages: ChatMessages[];
+
+  @OneToMany(() => Chats, (chat) => chat.student)
+  chats: Chats[];
 }

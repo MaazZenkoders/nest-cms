@@ -38,36 +38,15 @@ export class OtpService {
     return code;
   }
 
-  async verifyOTP(email: string, code: string) {
+  async verifyOTP(email: string, code: string): Promise<boolean> {
     const otp = await this.otpRepository.findOne({ where: { email, code } });
     if (!otp) {
-      await this.deleteUser(email);
       throw new HttpException('Invalid OTP', HttpStatus.BAD_REQUEST);
     }
-    if (otp.expires_at < otp.created_at) {
-      await this.deleteUser(email);
+    if (otp.expires_at < new Date()) {
       throw new HttpException('OTP expired', HttpStatus.BAD_REQUEST);
     }
     await this.otpRepository.remove(otp);
     return true;
-  }
-
-  private async deleteUser(email: string) {
-    const student = await this.StudentRepository.findOne({ where: { email } });
-    if (student) {
-      await this.StudentRepository.remove(student);
-      return;
-    }
-    const teacher = await this.TeacherRepository.findOne({ where: { email } });
-    if (teacher) {
-      await this.TeacherRepository.remove(teacher);
-      return;
-    }
-    const admin = await this.AdminRepository.findOne({ where: { email } });
-    if (admin) {
-      await this.AdminRepository.remove(admin);
-      return;
-    }
-    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 }

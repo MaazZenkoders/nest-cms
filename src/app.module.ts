@@ -28,6 +28,7 @@ import { EmailsModule } from './emails/emails.module';
 import { ChatMessagesModule } from './chat-messages/chat-messages.module';
 import { ChatMessages } from './chat-messages/entities/chat-messages';
 import { ChatsModule } from './chats/chats.module';
+import { Chats } from './chats/entities/chats';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ChatsModule } from './chats/chats.module';
         AssignedCourses,
         Appointments,
         ChatMessages,
+        Chats,
       ],
       synchronize: true,
     }),
@@ -69,6 +71,7 @@ import { ChatsModule } from './chats/chats.module';
       AssignedCourses,
       Appointments,
       ChatMessages,
+      Chats,
     ]),
     MulterModule.register({
       dest: './uploads',
