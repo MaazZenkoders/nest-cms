@@ -20,4 +20,8 @@ export class CreateChatDto {
   @IsString()
   @IsNotEmpty()
   receiverType: 'student' | 'teacher';
+
+  @IsString()
+  @IsNotEmpty()
+  room_id: string;
 }

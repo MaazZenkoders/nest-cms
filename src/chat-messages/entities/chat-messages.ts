@@ -26,15 +26,19 @@ export class ChatMessages {
   updated_at: Date;
 
   @ManyToOne(() => Student, (student) => student.sentMessages)
+  @JoinColumn({ name: 'sender_student' })
   senderStudent: Student;
 
   @ManyToOne(() => Student, (student) => student.receivedMessages)
+  @JoinColumn({ name: 'reciever_student' })
   receiverStudent: Student;
 
   @ManyToOne(() => Teacher, (teacher) => teacher.sentMessages)
+  @JoinColumn({ name: 'sender_teacher' })
   senderTeacher: Teacher;
 
   @ManyToOne(() => Teacher, (teacher) => teacher.receivedMessages)
+  @JoinColumn({ name: 'reciever_teacher' })
   receiverTeacher: Teacher;
 
   @ManyToOne(() => Chats, (chat) => chat.messages)

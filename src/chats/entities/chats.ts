@@ -8,12 +8,13 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity({ name: 'chats' })
 export class Chats {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -25,8 +26,10 @@ export class Chats {
   messages: ChatMessages[];
 
   @ManyToOne(() => Student, (student) => student.chats)
+  @JoinColumn({ name: 'student_id' })
   student: Student;
 
   @ManyToOne(() => Teacher, (teacher) => teacher.chats)
+  @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
 }
