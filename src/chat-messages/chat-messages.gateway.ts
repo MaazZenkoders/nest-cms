@@ -54,11 +54,14 @@ export class ChatMessagesGateway
   }
 
   @SubscribeMessage('joinRoom')
-  async handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() teacher_id: string, student_id:string, room_id: string) {
+  async handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() {teacher_id, student_id, room_id}:{teacher_id: string, student_id:string, room_id: string}) {
     try {
       const teacher = await this.teacherRepoistory.findOne({
         where: { email: teacher_id },
       });
+      console.log({student_id})
+      console.log(teacher)
+      console.log(teacher_id)
       if (!teacher) {
         throw new NotFoundException('Teacher not found');
       }

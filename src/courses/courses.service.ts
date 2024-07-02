@@ -13,6 +13,7 @@ import { Enrollment } from 'src/enrollments/entities/enrollments';
 import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
+import { UpdateCourseDto } from './dto/updatecourse.dto';
 
 @Injectable()
 export class CoursesService {
@@ -49,6 +50,16 @@ export class CoursesService {
     return course;
   }
 
+  async updateCourseById(updatecoursedto: UpdateCourseDto, course_code: string) {
+    const course = await this.courseRepository.findOneBy({course_code})
+    if(!course){
+      throw new BadRequestException("Course not found")
+    }
+    this.courseRepository.merge(course, updatecoursedto);
+    await this.courseRepository.save(course);
+    return course;
+  }
+
   async getAllCourses(paginationsearchdto: PaginationSearchDto) {
     try {
       const { page, limit, search } = paginationsearchdto;
@@ -71,14 +82,6 @@ export class CoursesService {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-  }
-
-  async getCourseById(course_code: string) {
-    const course = await this.courseRepository.findOneBy({ course_code });
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
-    return course;
   }
 
   async deleteCourse(course_code: string) {

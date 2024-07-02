@@ -7,6 +7,8 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -25,7 +27,7 @@ export class TeachersController {
 
   @Role('admin')
   @Get('/getAll')
-  async getAllTeachers(@Body() paginationsearchdto: PaginationSearchDto) {
+  async getAllTeachers(@Query() paginationsearchdto: PaginationSearchDto) {
     const teachers =
       await this.teacherService.getAllTeachers(paginationsearchdto);
     return {
@@ -36,8 +38,8 @@ export class TeachersController {
   }
 
   @Role('admin', 'teacher')
-  @Get('/:email')
-  async getTeacherById(@Param('email') email: string) {
+  @Get('/profile/:email')
+  async teacherProfile(@Param('email') email: string) {
     const teacher = await this.teacherService.teacherProfile(email);
     return {
       status: HttpCode(HttpStatus.OK),
@@ -65,7 +67,7 @@ export class TeachersController {
 
   @Role('student')
   @UseInterceptors(FileInterceptor('image'))
-  @Patch('/updateprofilepicture/:email')
+  @Post('/updateprofilepicture/:email')
   async updateTeacherProfilePicture(
     @Param('email') email: string,
     @UploadedFile() file: Express.Multer.File,

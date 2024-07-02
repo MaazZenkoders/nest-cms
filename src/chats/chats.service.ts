@@ -24,6 +24,7 @@ export class ChatRoomService {
   ) {}
 
   async createChat(createchatroomdto: CreateChatRoomDto) {
+    console.log(createchatroomdto)
     const teacher = await this.teacherRepoistory.findOne({
       where: { email: createchatroomdto.teacher_id },
     });

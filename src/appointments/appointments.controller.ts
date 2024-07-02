@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
@@ -13,6 +14,7 @@ import { CreateAppointmentDto } from './dto/createappointment.dto';
 import { ApproveRejectAppointmentDto } from './dto/approvereject.dto';
 import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
+import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
 @UseGuards(RoleAuthorizationGuard)
 @Controller('appointments')
@@ -31,11 +33,35 @@ export class AppointmentsController {
     };
   }
 
-  @Role('teacher', 'student')
+  @Role('admin')
+  @Get('/getAll')
+  async getAllAppointments(@Query() paginationsearchdto: PaginationSearchDto) {
+    const appointments =
+      await this.appointmentsService.getAllAppointments(paginationsearchdto);
+    return {
+      status: HttpCode(HttpStatus.OK),
+      appointments,
+      message: 'Appointments retrieved successfully',
+    };
+  }
+
+  @Role('teacher')
   @Get('/:teacher_id')
   async getAppointmentsByTeacherId(@Param('teacher_id') teacher_id: string) {
     const appointments =
       await this.appointmentsService.getAppointmentsByTeacherId(teacher_id);
+    return {
+      status: HttpCode(HttpStatus.OK),
+      appointments,
+      message: 'Appointments retrieved successfully',
+    };
+  }
+
+  @Role('student')
+  @Get('/:student_id')
+  async getAppointmentsByStudentId(@Param('student_id') student_id: string) {
+    const appointments =
+      await this.appointmentsService.getAppointmentsByStudentId(student_id);
     return {
       status: HttpCode(HttpStatus.OK),
       appointments,

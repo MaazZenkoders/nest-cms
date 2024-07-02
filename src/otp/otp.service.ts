@@ -31,7 +31,7 @@ export class OtpService {
     const otp = this.otpRepository.create({
       email,
       code,
-      expires_at: new Date(Date.now() + 1000 * 60 * 60),
+      expires_at: new Date(Date.now() + 5 * 60 * 1000),
     });
     await this.otpRepository.save(otp);
     await this.emailService.sendOTPEmail(email, code);

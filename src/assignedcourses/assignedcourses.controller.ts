@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateAssignedCoursesDto } from './dto/createassignedcourses.dto';
@@ -15,7 +16,7 @@ import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
-// UseGuards(RoleAuthorizationGuard)
+UseGuards(RoleAuthorizationGuard)
 @Controller('assignedcourses')
 export class AssignedcoursesController {
   constructor(
@@ -40,7 +41,7 @@ export class AssignedcoursesController {
   @Role('admin')
   @Get('/getAll')
   async getAllAssignedCourses(
-    @Body() paginationsearchdto: PaginationSearchDto,
+    @Query() paginationsearchdto: PaginationSearchDto,
   ) {
     const assignedCourses =
       await this.assignedCoursesService.getAllAssignedCourses(
@@ -55,7 +56,7 @@ export class AssignedcoursesController {
 
   @Role('admin', 'teacher')
   @Get('/:teacher_id')
-  async getEnrollmentsByStudentId(@Param('teacher_id') teacher_id: string) {
+  async getAssignedCourseByTeacherId(@Param('teacher_id') teacher_id: string) {
     const assignCourses =
       await this.assignedCoursesService.getAssignedCourseByTeacherId(
         teacher_id,
@@ -68,7 +69,7 @@ export class AssignedcoursesController {
   }
 
   @Role('admin')
-  @Delete()
+  @Delete('/delete')
   async deleteAssignedCourse(
     @Param('teacher_id') teacher_id: string,
     @Param('course_code') course_code: string,

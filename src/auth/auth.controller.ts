@@ -6,6 +6,7 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 import { CreateStudentDto } from 'src/students/dto/createstudent.dto';
 import { AuthService } from './auth.service';
@@ -85,7 +86,7 @@ export class AuthController {
     };
   }
 
-  @Post('/verify')
+  @Post('/verifyotp')
   async verifyUser(email: string, code: string) {
     await this.otpService.verifyOTP(email, code);
     return {
@@ -94,14 +95,4 @@ export class AuthController {
     };
   }
 
-  @UseInterceptors(FileInterceptor('image'))
-  @Post('/uploadprofilepicture')
-  async uploadProfilePciture(@UploadedFile() file: Express.Multer.File) {
-    const profilePictureUrl = await this.authService.uploadProfilePicture(file);
-    return {
-      status: HttpCode(HttpStatus.CREATED),
-      profilePictureUrl,
-      message: 'Profile picture uploaded successfully.',
-    };
-  }
 }

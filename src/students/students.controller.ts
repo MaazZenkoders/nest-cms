@@ -10,6 +10,8 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  Query,
+  Post,
 } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
@@ -25,7 +27,7 @@ export class StudentsController {
 
   @Role('admin')
   @Get('/getAll')
-  async getAllStudents(@Body() paginationsearchdto: PaginationSearchDto) {
+  async getAllStudents(@Query() paginationsearchdto: PaginationSearchDto) {
     const students =
       await this.studentService.getAllStudents(paginationsearchdto);
     return {
@@ -65,7 +67,7 @@ export class StudentsController {
 
   @Role('student')
   @UseInterceptors(FileInterceptor('image'))
-  @Patch('/updateprofilepicture/:email')
+  @Post('/updateprofilepicture/:email')
   async updateStudentProfilePicture(
     @Param('email') email: string,
     @UploadedFile() file: Express.Multer.File,

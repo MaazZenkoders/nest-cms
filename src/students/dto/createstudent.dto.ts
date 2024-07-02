@@ -25,10 +25,6 @@ export class CreateStudentDto {
 
   @IsNotEmpty()
   @IsNumber()
-  otp: string;
-
-  @IsNotEmpty()
-  @IsNumber()
   contact: number;
 
   @IsNotEmpty()

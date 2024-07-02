@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { EnrollmentsService } from './enrollments.service';
@@ -34,7 +35,7 @@ export class EnrollmentsController {
 
   @Role('admin')
   @Get('/getAll')
-  async getAllEnrollments(@Body() paginationsearchdto: PaginationSearchDto) {
+  async getAllEnrollments(@Query() paginationsearchdto: PaginationSearchDto) {
     const enrollments =
       await this.enrollmentService.getAllEnrollments(paginationsearchdto);
     return {
@@ -57,7 +58,7 @@ export class EnrollmentsController {
   }
 
   @Role('student')
-  @Delete()
+  @Delete('/dropenrollment')
   async dropEnrollment(
     @Body('student_id') student_id: string,
     @Body('course_code') course_code: string,

@@ -72,6 +72,9 @@ export class AssignedcoursesService {
         .take(limit)
         .getManyAndCount();
 
+        // const [all] = await this.assignedCoursesRepository.findAndCount(
+        //   {take} 
+        // )
       return {
         data: result,
         count: total,

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   HttpException,
   HttpStatus,
@@ -17,8 +18,6 @@ import * as bcrypt from 'bcrypt';
 import { LoginStudentDto } from 'src/students/dto/loginstudent.dto';
 import { LoginTeacherDto } from 'src/teachers/dto/loginteacher.dto';
 import { LoginAdminDto } from 'src/admins/dto/loginadmin.dto';
-import * as FormData from 'form-data';
-import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { OtpService } from 'src/otp/otp.service';
 import { DomainsService } from 'src/domains/domains.service';
@@ -28,8 +27,6 @@ import { Domain } from 'src/domains/entities/domain';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-
-    private readonly httpService: HttpService,
 
     private readonly otpService: OtpService,
 
@@ -74,8 +71,8 @@ export class AuthService {
     });
     this.StudentRepository.save(user);
     const payload = {
-      email: createstudentdto.email,
-      role: createstudentdto.role,
+      email: user.email,
+      role: user.role,
     };
     const accessToken = await this.jwtService.signAsync(payload);
     return { user, accessToken };
@@ -110,8 +107,8 @@ export class AuthService {
     });
     this.TeacherRepository.save(user);
     const payload = {
-      email: createteacherdto.email,
-      role: createteacherdto.role,
+      email: user.email,
+      role: user.role,
     };
     const accessToken = await this.jwtService.signAsync(payload);
     return { user, accessToken };
@@ -145,7 +142,7 @@ export class AuthService {
       updated_at: new Date(Date.now()),
     });
     this.AdminRepository.save(user);
-    const payload = { email: createadmindto.email, role: createadmindto.role };
+    const payload = { email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
     return { user, accessToken };
   }
@@ -232,24 +229,5 @@ export class AuthService {
       loggedInUser,
       accessToken,
     };
-  }
-
-  async uploadProfilePicture(file: Express.Multer.File) {
-    let imageUrl: string;
-    if (file) {
-      const form = new FormData();
-      form.append('image', file.buffer, file.originalname);
-      const apiKey = '783d9d256253126161eb9f6b79c5a81e';
-      const uploadUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
-      const response = await firstValueFrom(
-        this.httpService.post(uploadUrl, form, {
-          headers: {
-            ...form.getHeaders(),
-          },
-        }),
-      );
-      imageUrl = response.data.data.url;
-    }
-    return imageUrl;
   }
 }
