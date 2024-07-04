@@ -19,6 +19,7 @@ import { Role } from 'src/decorators/roles.decorator';
 import { UpdateTeacherDto } from './dto/updateteacher.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
+import { EmailExtractor } from 'src/decorators/email.decorator';
 
 UseGuards(RoleAuthorizationGuard);
 @Controller('teachers')
@@ -38,8 +39,8 @@ export class TeachersController {
   }
 
   @Role('admin', 'teacher')
-  @Get('/profile/:email')
-  async teacherProfile(@Param('email') email: string) {
+  @Get('/profile')
+  async teacherProfile(@EmailExtractor() email: string) {
     const teacher = await this.teacherService.teacherProfile(email);
     return {
       status: HttpCode(HttpStatus.OK),
@@ -65,11 +66,11 @@ export class TeachersController {
     };
   }
 
-  @Role('student')
+  @Role('teacher')
   @UseInterceptors(FileInterceptor('image'))
-  @Post('/updateprofilepicture/:email')
+  @Post('/updateprofilepicture')
   async updateTeacherProfilePicture(
-    @Param('email') email: string,
+    @EmailExtractor() email: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const updatedProfilePicture =

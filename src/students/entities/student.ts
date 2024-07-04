@@ -3,6 +3,7 @@ import { Enrollment } from 'src/enrollments/entities/enrollments';
 import { Appointments } from 'src/appointments/entities/appointments';
 import { ChatMessages } from 'src/chat-messages/entities/chat-messages';
 import { Chats } from 'src/chats/entities/chats';
+import { Transactions } from 'src/stripe/entities/transactions';
 
 @Entity({ name: 'students' })
 export class Student {
@@ -53,6 +54,9 @@ export class Student {
 
   @OneToMany(() => ChatMessages, (chatMessage) => chatMessage.receiverStudent)
   receivedMessages: ChatMessages[];
+
+  @OneToMany(() => Transactions, (transaction) => transaction.student)
+  transactions: Transactions[];
 
   @OneToMany(() => Chats, (chat) => chat.student)
   chats: Chats[];

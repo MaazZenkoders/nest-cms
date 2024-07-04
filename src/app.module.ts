@@ -29,6 +29,8 @@ import { ChatMessagesModule } from './chat-messages/chat-messages.module';
 import { ChatMessages } from './chat-messages/entities/chat-messages';
 import { ChatsModule } from './chats/chats.module';
 import { Chats } from './chats/entities/chats';
+import { StripeModule } from './stripe/stripe.module';
+import { Transactions } from './stripe/entities/transactions';
 
 @Module({
   imports: [
@@ -38,7 +40,7 @@ import { Chats } from './chats/entities/chats';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'db_post',
+      password: process.env.DB_PASSWORD,
       database: 'cms_db',
       entities: [
         Student,
@@ -52,6 +54,7 @@ import { Chats } from './chats/entities/chats';
         Appointments,
         ChatMessages,
         Chats,
+        Transactions,
       ],
       synchronize: true,
     }),
@@ -72,6 +75,7 @@ import { Chats } from './chats/entities/chats';
       Appointments,
       ChatMessages,
       Chats,
+      Transactions,
     ]),
     MulterModule.register({
       dest: './uploads',
@@ -89,6 +93,10 @@ import { Chats } from './chats/entities/chats';
     EmailsModule,
     ChatMessagesModule,
     ChatsModule,
+    StripeModule,
+    ConfigModule.forRoot({
+      isGlobal:true
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

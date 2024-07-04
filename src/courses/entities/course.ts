@@ -1,5 +1,6 @@
 import { AssignedCourses } from 'src/assignedcourses/entities/assignedcourses';
 import { Enrollment } from 'src/enrollments/entities/enrollments';
+import { Transactions } from 'src/stripe/entities/transactions';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'courses' })
@@ -16,6 +17,12 @@ export class Course {
   @Column({ type: 'date' })
   deadline: Date;
 
+  @Column({type: 'boolean'})
+  paid: boolean
+
+  @Column({nullable: true})
+  price: string
+
   @Column({ type: 'timestamp' })
   created_at: Date;
 
@@ -24,6 +31,9 @@ export class Course {
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
   enrollments: Enrollment[];
+
+  @OneToMany(() => Transactions, (transaction) => transaction.course)
+  transactions: Transactions[];
 
   @OneToMany(() => AssignedCourses, (assignedcourse) => assignedcourse.course)
   assignedcourses: AssignedCourses[];

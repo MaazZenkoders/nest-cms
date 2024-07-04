@@ -55,7 +55,7 @@ export class RoleAuthorizationGuard implements CanActivate {
         HttpStatus.FORBIDDEN,
       );
     }
-
+    request.userId = payload.email;
     return true;
   }
 }

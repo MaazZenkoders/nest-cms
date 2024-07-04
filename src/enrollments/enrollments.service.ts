@@ -12,6 +12,7 @@ import { Student } from 'src/students/entities/student';
 import { Course } from 'src/courses/entities/course';
 import { async } from 'rxjs';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
+import { StripeService } from 'src/stripe/stripe.service';
 
 @Injectable()
 export class EnrollmentsService {
@@ -24,7 +25,32 @@ export class EnrollmentsService {
 
     @InjectRepository(Course)
     private courseRepository: Repository<Course>,
+
+    private readonly stripeService: StripeService
   ) {}
+
+  async buyCourse(course_code: string, email:string) {
+    const student = await this.studentRepository.findOneBy({email})
+    if(!student){
+      throw new NotFoundException("Student not found")
+    }
+    const course = await this.courseRepository.findOne({
+      where: { course_code: course_code },
+    });
+    if(!course.paid){
+      throw new BadRequestException('This is unpaid course')
+    }
+    const existingEnrollment = await this.enrollmentRepository.findOne({
+      where: { student: student, course: course },
+    });
+    if (existingEnrollment) {
+      throw new BadRequestException(
+        'Student is already enrolled in this course',
+      );
+    }
+    const session = await this.stripeService.createCheckoutSession(course);
+    return session;
+  }
 
   async createEnrollment(createenrollmentdto: CreateEnrollmentDto) {
     const student = await this.studentRepository.findOne({

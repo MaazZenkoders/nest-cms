@@ -15,6 +15,7 @@ import { CreateEnrollmentDto } from './dto/createenrollment.dto';
 import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
+import { EmailExtractor } from 'src/decorators/email.decorator';
 
 @UseGuards(RoleAuthorizationGuard)
 @Controller('enrollments')
@@ -64,5 +65,18 @@ export class EnrollmentsController {
     @Body('course_code') course_code: string,
   ) {
     return await this.enrollmentService.dropEnrollment(student_id, course_code);
+  }
+
+  @Role('student')
+  @Post('/buycourse')
+  async buyCourse(
+    @Param('course_code') course_code: string,
+    @EmailExtractor('email') email: string
+  ) {
+    const session = await this.enrollmentService.buyCourse(course_code, email)
+    return{
+      status: HttpCode(HttpStatus.ACCEPTED),
+      session,
+    }
   }
 }
