@@ -48,7 +48,7 @@ export class EnrollmentsService {
         'Student is already enrolled in this course',
       );
     }
-    const session = await this.stripeService.createCheckoutSession(course);
+    const session = await this.stripeService.createCheckoutSession(course,email);
     return session;
   }
 

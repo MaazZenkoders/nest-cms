@@ -18,12 +18,12 @@ import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 import { UpdateAdminDto } from 'src/admins/dto/updateadmin.dto';
 
-@UseGuards(RoleAuthorizationGuard)
+// @UseGuards(RoleAuthorizationGuard)
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly courseService: CoursesService) {}
 
-  @Role('admin')
+  // @Role('admin')
   @Post('/create')
   async createCourse(@Body() createcoursedto: CreateCourseDto) {
     const course = await this.courseService.createCourse(createcoursedto);

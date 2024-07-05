@@ -17,7 +17,7 @@ import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 import { EmailExtractor } from 'src/decorators/email.decorator';
 
-@UseGuards(RoleAuthorizationGuard)
+// @UseGuards(RoleAuthorizationGuard)
 @Controller('enrollments')
 export class EnrollmentsController {
   constructor(private readonly enrollmentService: EnrollmentsService) {}
@@ -67,11 +67,11 @@ export class EnrollmentsController {
     return await this.enrollmentService.dropEnrollment(student_id, course_code);
   }
 
-  @Role('student')
+  // @Role('student')
   @Post('/buycourse')
   async buyCourse(
     @Param('course_code') course_code: string,
-    @EmailExtractor('email') email: string
+    @EmailExtractor() email: string
   ) {
     const session = await this.enrollmentService.buyCourse(course_code, email)
     return{

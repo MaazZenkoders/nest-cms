@@ -6,9 +6,10 @@ import { Student } from 'src/students/entities/student';
 import { Course } from 'src/courses/entities/course';
 import { Transactions } from './entities/transactions';
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student, Course, Transactions]),ConfigModule],
+  imports: [TypeOrmModule.forFeature([Student, Course, Transactions]),ConfigModule, HttpModule],
   controllers: [StripeController],
   providers: [StripeService]
 })

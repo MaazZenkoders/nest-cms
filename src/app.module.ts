@@ -31,6 +31,9 @@ import { ChatsModule } from './chats/chats.module';
 import { Chats } from './chats/entities/chats';
 import { StripeModule } from './stripe/stripe.module';
 import { Transactions } from './stripe/entities/transactions';
+import { HttpModule } from '@nestjs/axios';
+import { StripeController } from './stripe/stripe.controller';
+import { StripeService } from './stripe/stripe.service';
 
 @Module({
   imports: [
@@ -60,7 +63,7 @@ import { Transactions } from './stripe/entities/transactions';
     }),
     JwtModule.register({
       global: true,
-      secret: 'mysecret',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
     TypeOrmModule.forFeature([
@@ -96,9 +99,10 @@ import { Transactions } from './stripe/entities/transactions';
     StripeModule,
     ConfigModule.forRoot({
       isGlobal:true
-    })
+    }),
+    HttpModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, StripeController],
+  providers: [AppService,StripeService],
 })
 export class AppModule {}
