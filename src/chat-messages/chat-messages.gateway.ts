@@ -23,8 +23,8 @@ import { Repository } from 'typeorm';
 
 @WebSocketGateway()
 export class ChatMessagesGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -54,14 +54,22 @@ export class ChatMessagesGateway
   }
 
   @SubscribeMessage('joinRoom')
-  async handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() {teacher_id, student_id, room_id}:{teacher_id: string, student_id:string, room_id: string}) {
+  async handleJoinRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    {
+      teacher_id,
+      student_id,
+      room_id,
+    }: { teacher_id: string; student_id: string; room_id: string },
+  ) {
     try {
       const teacher = await this.teacherRepoistory.findOne({
         where: { email: teacher_id },
       });
-      console.log({student_id})
-      console.log(teacher)
-      console.log(teacher_id)
+      console.log({ student_id });
+      console.log(teacher);
+      console.log(teacher_id);
       if (!teacher) {
         throw new NotFoundException('Teacher not found');
       }
@@ -75,7 +83,7 @@ export class ChatMessagesGateway
         where: { teacher: teacher, student: student },
         relations: ['teacher', 'student'],
       });
-      const room_id = chat.id
+      const room_id = chat.id;
       client.join(room_id);
       console.log(`Client ${client.id} joined room ${room_id}`);
     } catch (error) {
@@ -89,10 +97,11 @@ export class ChatMessagesGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const message = await this.chatMessagesService.createChat(createmessagedto);
+      const message =
+        await this.chatMessagesService.createChat(createmessagedto);
       client.to(createmessagedto.room_id).emit('message', {
         sentby: createmessagedto.senderEmail,
-        text: message.content
+        text: message.content,
       });
     } catch (error) {
       console.log(error);

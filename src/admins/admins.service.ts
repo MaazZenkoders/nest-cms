@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
@@ -32,10 +36,7 @@ export class AdminsService {
     return admin;
   }
 
-  async updateAdminProfile(
-    email: string,
-    updateadmindto: UpdateAdminDto,
-  ) {
+  async updateAdminProfile(email: string, updateadmindto: UpdateAdminDto) {
     const admin = await this.adminRepository.findOneBy({ email });
     if (!admin) {
       throw new NotFoundException(`Admin with email ${email} not found`);
@@ -46,9 +47,9 @@ export class AdminsService {
   }
 
   async uploadAdminProfilePicture(file: Express.Multer.File, email: string) {
-    const admin = await this.adminRepository.findOneBy({email})
-    if(!admin){
-      throw new BadRequestException('Admin not found')
+    const admin = await this.adminRepository.findOneBy({ email });
+    if (!admin) {
+      throw new BadRequestException('Admin not found');
     }
     let imageUrl: string;
     if (file) {
@@ -65,7 +66,7 @@ export class AdminsService {
       );
       imageUrl = response.data.data.url;
     }
-    admin.image_url = imageUrl
+    admin.image_url = imageUrl;
     return imageUrl;
   }
 

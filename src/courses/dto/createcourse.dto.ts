@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsDate, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 
 export class CreateCourseDto {
   @IsNotEmpty()
@@ -15,8 +15,8 @@ export class CreateCourseDto {
   description: string;
 
   @IsNotEmpty()
-  @IsBoolean()
-  paid: boolean;
+  @IsString()
+  paid: string;
 
   @IsString()
   price: string;

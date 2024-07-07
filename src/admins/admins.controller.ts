@@ -56,7 +56,7 @@ export class AdminsController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const updatedProfilePicture =
-      await this.adminService.uploadAdminProfilePicture(file,email);
+      await this.adminService.uploadAdminProfilePicture(file, email);
     return {
       status: HttpCode(HttpStatus.CREATED),
       updatedProfilePicture,

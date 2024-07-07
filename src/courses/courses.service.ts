@@ -50,10 +50,13 @@ export class CoursesService {
     return course;
   }
 
-  async updateCourseById(updatecoursedto: UpdateCourseDto, course_code: string) {
-    const course = await this.courseRepository.findOneBy({course_code})
-    if(!course){
-      throw new BadRequestException("Course not found")
+  async updateCourseById(
+    updatecoursedto: UpdateCourseDto,
+    course_code: string,
+  ) {
+    const course = await this.courseRepository.findOneBy({ course_code });
+    if (!course) {
+      throw new BadRequestException('Course not found');
     }
     this.courseRepository.merge(course, updatecoursedto);
     await this.courseRepository.save(course);

@@ -34,6 +34,7 @@ import { Transactions } from './stripe/entities/transactions';
 import { HttpModule } from '@nestjs/axios';
 import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
+import { EmailsService } from './emails/emails.service';
 
 @Module({
   imports: [
@@ -98,11 +99,11 @@ import { StripeService } from './stripe/stripe.service';
     ChatsModule,
     StripeModule,
     ConfigModule.forRoot({
-      isGlobal:true
+      isGlobal: true,
     }),
-    HttpModule
+    HttpModule,
   ],
   controllers: [AppController, StripeController],
-  providers: [AppService,StripeService],
+  providers: [AppService, StripeService, EmailsService],
 })
 export class AppModule {}

@@ -18,12 +18,12 @@ import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 import { UpdateAdminDto } from 'src/admins/dto/updateadmin.dto';
 
-// @UseGuards(RoleAuthorizationGuard)
+@UseGuards(RoleAuthorizationGuard)
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly courseService: CoursesService) {}
 
-  // @Role('admin')
+  @Role('admin')
   @Post('/create')
   async createCourse(@Body() createcoursedto: CreateCourseDto) {
     const course = await this.courseService.createCourse(createcoursedto);
@@ -36,13 +36,19 @@ export class CoursesController {
 
   @Role('admin')
   @Patch('/update')
-  async updateCourseById(@Body() updatecoursedto: UpdateAdminDto, course_code: string) {
-    const updatedCourse = await this.courseService.updateCourseById(updatecoursedto,course_code)
+  async updateCourseById(
+    @Body() updatecoursedto: UpdateAdminDto,
+    course_code: string,
+  ) {
+    const updatedCourse = await this.courseService.updateCourseById(
+      updatecoursedto,
+      course_code,
+    );
     return {
       status: HttpCode(HttpStatus.OK),
       updatedCourse,
-      message:"Course updated successfully."
-    }
+      message: 'Course updated successfully.',
+    };
   }
 
   @Role('student', 'student', 'admin')

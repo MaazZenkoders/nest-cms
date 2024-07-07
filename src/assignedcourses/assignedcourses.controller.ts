@@ -16,7 +16,7 @@ import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 
-UseGuards(RoleAuthorizationGuard)
+UseGuards(RoleAuthorizationGuard);
 @Controller('assignedcourses')
 export class AssignedcoursesController {
   constructor(

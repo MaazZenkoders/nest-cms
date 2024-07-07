@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/createappointment.dto';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { Repository } from 'typeorm';
@@ -59,7 +63,8 @@ export class AppointmentsService {
   async getAllAppointments(paginationsearchdto: PaginationSearchDto) {
     try {
       const { page, limit, search } = paginationsearchdto;
-      const query = this.appointmentRepository.createQueryBuilder('appointments');
+      const query =
+        this.appointmentRepository.createQueryBuilder('appointments');
       if (search) {
         query.where(
           'appointments.student LIKE :search OR appointments.teacher LIKE :search',
@@ -70,7 +75,7 @@ export class AppointmentsService {
         .skip((page - 1) * limit)
         .take(limit)
         .getManyAndCount();
-        
+
       return {
         data: result,
         count: total,

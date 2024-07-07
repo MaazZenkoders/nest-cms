@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   HttpException,
   HttpStatus,
@@ -18,7 +17,6 @@ import * as bcrypt from 'bcrypt';
 import { LoginStudentDto } from 'src/students/dto/loginstudent.dto';
 import { LoginTeacherDto } from 'src/teachers/dto/loginteacher.dto';
 import { LoginAdminDto } from 'src/admins/dto/loginadmin.dto';
-import { HttpService } from '@nestjs/axios';
 import { OtpService } from 'src/otp/otp.service';
 import { DomainsService } from 'src/domains/domains.service';
 import { Domain } from 'src/domains/entities/domain';
@@ -150,9 +148,7 @@ export class AuthService {
   async studentLogin(loginstudentdto: LoginStudentDto) {
     const user = await this.StudentRepository.findOneBy({
       email: loginstudentdto.email,
-    })
-    console.log('Login Attempt:', loginstudentdto.email, loginstudentdto.password);
-    console.log('User Found:', user);
+    });
     if (!user) {
       throw new HttpException(
         'Student with these credentials doesnt exist.',
@@ -162,7 +158,10 @@ export class AuthService {
     if (user.is_suspended === true) {
       throw new ForbiddenException('You are suspended.');
     }
-    const isPasswordValid = await bcrypt.compare(loginstudentdto.password,user.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginstudentdto.password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new HttpException('Invalid credentials.', HttpStatus.UNAUTHORIZED);
     }

@@ -1,7 +1,13 @@
 import { Course } from 'src/courses/entities/course';
 import { TransactionStatus } from 'src/enums/transactionstatus';
 import { Student } from 'src/students/entities/student';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'transactions' })
 export class Transactions {
@@ -16,7 +22,10 @@ export class Transactions {
   status: TransactionStatus;
 
   @Column()
-  payment_log: string
+  payment_log: string;
+
+  @Column()
+  amount_paid: number;
 
   @ManyToOne(() => Course, (course) => course.transactions)
   @JoinColumn({ name: 'course_code' })

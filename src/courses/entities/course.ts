@@ -17,11 +17,11 @@ export class Course {
   @Column({ type: 'date' })
   deadline: Date;
 
-  @Column({type: 'boolean'})
-  paid: boolean
+  @Column()
+  paid: string;
 
-  @Column({nullable: true})
-  price: string
+  @Column({ nullable: true })
+  price: string;
 
   @Column({ type: 'timestamp' })
   created_at: Date;

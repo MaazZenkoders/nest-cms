@@ -1,18 +1,20 @@
-import { BadRequestException, Injectable, NotFoundException, RawBodyRequest } from '@nestjs/common';
+import { Injectable, NotFoundException, RawBodyRequest } from '@nestjs/common';
 import Stripe from 'stripe';
 import { Course } from 'src/courses/entities/course';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transactions } from './entities/transactions';
 import { Repository } from 'typeorm';
 import { Student } from 'src/students/entities/student';
-import { Request, Response } from 'express';
 import { TransactionStatus } from 'src/enums/transactionstatus';
+import { EmailsService } from 'src/emails/emails.service';
 
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
 
   constructor(
+    private readonly emailService: EmailsService,
+
     @InjectRepository(Transactions)
     private readonly transactionRepository: Repository<Transactions>,
 
@@ -28,52 +30,56 @@ export class StripeService {
   }
 
   async handleWebhook(
-    payload:RawBodyRequest<Request>['rawBody'],
-    signature: string
+    payload: RawBodyRequest<Request>['rawBody'],
+    signature: string,
   ) {
     const webhookSecret = process.env.WEBHOOK_SECRET;
-    if(!signature){
-      throw new NotFoundException("Signature was not gound.")
+    if (!signature) {
+      throw new NotFoundException('Signature was not found.');
     }
-    let event: Stripe.Event;
-      event = this.stripe.webhooks.constructEvent(
-        payload,
-        signature,
-        webhookSecret
-      );
+    const event = this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      webhookSecret,
+    );
     switch (event.type) {
       case 'checkout.session.completed':
-        const session = event.data.object ;
+        const session = event.data.object as Stripe.Checkout.Session;
         await this.handleCheckoutSessionCompleted(session);
         break;
       case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object ;
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
         await this.handlePaymentIntentSucceeded(paymentIntent);
         break;
       case 'payment_intent.payment_failed':
-        const paymentFailed = event.data.object;
+        const paymentFailed = event.data.object as Stripe.PaymentIntent;
         await this.handlePaymentIntentFailed(paymentFailed);
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
-    return({ received: true });
+    return { received: true };
   }
 
-  private async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+  private async handleCheckoutSessionCompleted(
+    session: Stripe.Checkout.Session,
+  ) {
     const course_code = session.metadata.course_code;
     const email = session.metadata.email;
+    const paymentIntentId = session.payment_intent as string;
     const course = await this.courseRepository.findOneBy({ course_code });
     const student = await this.studentRepository.findOneBy({ email });
     if (!course || !student) {
       console.error('Course or Student not found');
       return;
     }
+    const amountInDollars = session.amount_total / 100;
     const transaction = this.transactionRepository.create({
       status: TransactionStatus.pending,
-      payment_log: session.id,
+      payment_log: paymentIntentId,
       course: course,
       student: student,
+      amount_paid: amountInDollars,
     });
     await this.transactionRepository.save(transaction);
   }
@@ -81,9 +87,9 @@ export class StripeService {
   private async handlePaymentIntentSucceeded(
     paymentIntent: Stripe.PaymentIntent,
   ) {
-    const sessionId = paymentIntent.metadata.session_id;
+    const paymentIntentId = paymentIntent.id;
     const transaction = await this.transactionRepository.findOne({
-      where: { payment_log: sessionId },
+      where: { payment_log: paymentIntentId },
       relations: ['course', 'student'],
     });
     if (!transaction) {
@@ -92,12 +98,17 @@ export class StripeService {
     }
     transaction.status = TransactionStatus.successful;
     await this.transactionRepository.save(transaction);
+    await this.emailService.sendTransactionEmail(transaction.student.email, {
+      student: transaction.student.name,
+      course: transaction.course.name,
+      status: TransactionStatus.successful,
+    });
   }
 
   private async handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
-    const sessionId = paymentIntent.metadata.session_id;
+    const paymentIntentId = paymentIntent.id;
     const transaction = await this.transactionRepository.findOne({
-      where: { payment_log: sessionId },
+      where: { payment_log: paymentIntentId },
       relations: ['course', 'student'],
     });
     if (!transaction) {
@@ -106,9 +117,15 @@ export class StripeService {
     }
     transaction.status = TransactionStatus.failed;
     await this.transactionRepository.save(transaction);
+    await this.emailService.sendTransactionEmail(transaction.student.email, {
+      student: transaction.student.name,
+      course: transaction.course.name,
+      status: TransactionStatus.failed,
+    });
   }
 
-  async createCheckoutSession(course: Course, email: string) {
+  async createCheckoutSession(course_code: string, email: string) {
+    const course = await this.courseRepository.findOneBy({ course_code });
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       metadata: {

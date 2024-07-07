@@ -24,7 +24,7 @@ export class ChatRoomService {
   ) {}
 
   async createChat(createchatroomdto: CreateChatRoomDto) {
-    console.log(createchatroomdto)
+    console.log(createchatroomdto);
     const teacher = await this.teacherRepoistory.findOne({
       where: { email: createchatroomdto.teacher_id },
     });
@@ -50,7 +50,7 @@ export class ChatRoomService {
       created_at: new Date(),
       updated_at: new Date(),
     });
-    await this.chatRepository.save(chatRoom)
+    await this.chatRepository.save(chatRoom);
     return {
       teacher: teacher.email,
       student: student.email,
