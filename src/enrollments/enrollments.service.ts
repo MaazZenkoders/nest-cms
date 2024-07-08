@@ -38,8 +38,15 @@ export class EnrollmentsService {
       throw new NotFoundException('Student not found');
     }
     const course = await this.courseRepository.findOneBy({ course_code });
+    if(!course){
+      throw new NotFoundException("Course not found.")
+    }
     if (course.paid === 'false') {
       throw new BadRequestException('This is an unpaid course.');
+    }
+    const currentDate = new Date();
+    if (currentDate > course.deadline) {
+      throw new ForbiddenException('Drop deadline has passed');
     }
     const existingTransaction = await this.transactionRepository.findOne({
       where: { student: student, course: course },
@@ -82,6 +89,10 @@ export class EnrollmentsService {
       throw new BadRequestException(
         'Student is already enrolled in this course',
       );
+    }
+    const currentDate = new Date();
+    if (currentDate > course.deadline) {
+      throw new ForbiddenException('Drop deadline has passed');
     }
     if (course.paid === 'true') {
       const existingTransaction = await this.transactionRepository.findOne({

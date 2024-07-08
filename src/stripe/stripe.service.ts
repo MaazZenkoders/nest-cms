@@ -42,6 +42,7 @@ export class StripeService {
       signature,
       webhookSecret,
     );
+
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
@@ -54,6 +55,10 @@ export class StripeService {
       case 'payment_intent.payment_failed':
         const paymentFailed = event.data.object as Stripe.PaymentIntent;
         await this.handlePaymentIntentFailed(paymentFailed);
+        break;
+      case 'charge.succeeded':
+      case 'payment_intent.created':
+      case 'charge.updated':
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
@@ -88,6 +93,7 @@ export class StripeService {
     paymentIntent: Stripe.PaymentIntent,
   ) {
     const paymentIntentId = paymentIntent.id;
+    await new Promise(resolve => setTimeout(resolve, 5000)); 
     const transaction = await this.transactionRepository.findOne({
       where: { payment_log: paymentIntentId },
       relations: ['course', 'student'],
@@ -107,6 +113,7 @@ export class StripeService {
 
   private async handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
     const paymentIntentId = paymentIntent.id;
+    await new Promise(resolve => setTimeout(resolve, 5000)); 
     const transaction = await this.transactionRepository.findOne({
       where: { payment_log: paymentIntentId },
       relations: ['course', 'student'],
