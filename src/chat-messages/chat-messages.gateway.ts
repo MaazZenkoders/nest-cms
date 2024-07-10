@@ -11,15 +11,15 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatMessagesService } from './chat-messages.service';
 import { CreateChatDto } from './dto/createchat-messagesdto';
-import { JoinRoomDto } from './dto/joinroom.dto';
 import { ChatRoomService } from 'src/chats/chats.service';
-import { CreateChatRoomDto } from 'src/chats/dto/createchat.dto';
 import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chats } from 'src/chats/entities/chats';
 import { Student } from 'src/students/entities/student';
 import { Teacher } from 'src/teachers/entities/teacher';
 import { Repository } from 'typeorm';
+import { Client } from 'socket.io/dist/client';
+import { AuthService } from 'src/auth/auth.service';
 
 @WebSocketGateway()
 export class ChatMessagesGateway
@@ -30,7 +30,11 @@ export class ChatMessagesGateway
 
   constructor(
     private readonly chatMessagesService: ChatMessagesService,
+
+    private readonly authService: AuthService,
+
     private readonly chatRoomService: ChatRoomService,
+
     @InjectRepository(Chats)
     private readonly chatRepository: Repository<Chats>,
 
@@ -46,7 +50,21 @@ export class ChatMessagesGateway
   }
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+    const token = client.handshake.headers.authorization?.split(' ')[1];
+    if (!token) {
+      client.disconnect();
+      return;
+    }
+    this.authService.validateToken(token).then(
+      (decoded) => {
+        client['user'] = decoded;
+        console.log(`Client connected: ${client.id}`);
+      },
+      (err) => {
+        client.disconnect();
+        console.log(`Client connected: ${client.id}`);
+      }
+    );
   }
 
   handleDisconnect(client: Socket) {
@@ -67,9 +85,6 @@ export class ChatMessagesGateway
       const teacher = await this.teacherRepoistory.findOne({
         where: { email: teacher_id },
       });
-      console.log({ student_id });
-      console.log(teacher);
-      console.log(teacher_id);
       if (!teacher) {
         throw new NotFoundException('Teacher not found');
       }

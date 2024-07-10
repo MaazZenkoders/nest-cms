@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -227,5 +228,13 @@ export class AuthService {
       loggedInUser,
       accessToken,
     };
+  }
+
+  async validateToken(token: string): Promise<any> {
+    try {
+      return this.jwtService.verifyAsync(token);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
