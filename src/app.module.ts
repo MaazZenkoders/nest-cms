@@ -8,7 +8,7 @@ import { Student } from './students/entities/student';
 import { TeachersModule } from './teachers/teachers.module';
 import { Teacher } from './teachers/entities/teacher';
 import { AdminsModule } from './admins/admins.module';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Admin } from './admins/entities/admin';
 import { DomainsModule } from './domains/domains.module';
 import { Domain } from './domains/entities/domain';
@@ -35,6 +35,9 @@ import { HttpModule } from '@nestjs/axios';
 import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
 import { EmailsService } from './emails/emails.service';
+import { AuthService } from './auth/auth.service';
+import { OtpService } from './otp/otp.service';
+import { DomainsService } from './domains/domains.service';
 
 @Module({
   imports: [
@@ -104,6 +107,6 @@ import { EmailsService } from './emails/emails.service';
     HttpModule,
   ],
   controllers: [AppController, StripeController],
-  providers: [AppService, StripeService, EmailsService],
+  providers: [AppService, StripeService, EmailsService, AuthService, OtpService, DomainsService],
 })
 export class AppModule {}

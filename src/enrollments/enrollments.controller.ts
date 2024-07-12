@@ -16,11 +16,16 @@ import { RoleAuthorizationGuard } from 'src/guards/roleauthorization.guard';
 import { Role } from 'src/decorators/roles.decorator';
 import { PaginationSearchDto } from 'src/utils/dto/paginationsearch.dto';
 import { EmailExtractor } from 'src/decorators/email.decorator';
+import { StripeService } from 'src/stripe/stripe.service';
 
 @UseGuards(RoleAuthorizationGuard)
 @Controller('enrollments')
 export class EnrollmentsController {
-  constructor(private readonly enrollmentService: EnrollmentsService) {}
+  constructor(
+    private readonly enrollmentService: EnrollmentsService,
+
+    private readonly stripeService: StripeService
+  ) {}
 
   @Role('student')
   @Post('/create')
@@ -78,5 +83,16 @@ export class EnrollmentsController {
       status: HttpCode(HttpStatus.ACCEPTED),
       session,
     };
+  }
+
+  @Role('student')
+  @Post('/subsrcibecourse')
+  async subscribeCourse(
+    @EmailExtractor() email: string,
+    @Body() body: any
+  ) {
+    const { name } = body;
+    const session = await this.stripeService.createSubscriptionSession(email,name)
+    return session
   }
 }

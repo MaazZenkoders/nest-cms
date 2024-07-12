@@ -20,6 +20,7 @@ import { Teacher } from 'src/teachers/entities/teacher';
 import { Repository } from 'typeorm';
 import { Client } from 'socket.io/dist/client';
 import { AuthService } from 'src/auth/auth.service';
+import { WsAuthMiddleware } from 'middlewares/wsauth.middleware';
 
 @WebSocketGateway()
 export class ChatMessagesGateway
@@ -30,6 +31,8 @@ export class ChatMessagesGateway
 
   constructor(
     private readonly chatMessagesService: ChatMessagesService,
+
+    private readonly wsAuthMiddleware: WsAuthMiddleware,
 
     private readonly authService: AuthService,
 
@@ -46,7 +49,7 @@ export class ChatMessagesGateway
   ) {}
 
   afterInit(server: Server) {
-    this.server = server;
+    server.use((socket, next) => this.wsAuthMiddleware.use(socket, next));
   }
 
   handleConnection(client: Socket) {

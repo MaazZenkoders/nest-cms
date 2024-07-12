@@ -29,6 +29,14 @@ export class StripeService {
     });
   }
 
+  async createCustomer(email: string, name: string) {
+    const customer = await this.stripe.customers.create({
+      email,
+      name,
+    });
+    return customer;
+  }
+
   async handleWebhook(
     payload: RawBodyRequest<Request>['rawBody'],
     signature: string,
@@ -56,14 +64,19 @@ export class StripeService {
         const paymentFailed = event.data.object as Stripe.PaymentIntent;
         await this.handlePaymentIntentFailed(paymentFailed);
         break;
-      case 'charge.succeeded':
+      case 'customer.subscription.created':
+        const subscriptionCreated = event.data.object as Stripe.Subscription;
+        await this.handleSubsriptionCompleted(subscriptionCreated);
       case 'payment_intent.created':
-      case 'charge.updated':
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
     return { received: true };
+  }
+
+  private async handleSubsriptionCompleted(subscriptionCreated: Stripe.Subscription) {
+    console.log("Subscription created")
   }
 
   private async handleCheckoutSessionCompleted(
@@ -158,5 +171,32 @@ export class StripeService {
         'https://medium.com/@emmanuelodii80/how-to-setup-stripe-within-nestjs-application-61b7509a66dc',
     });
     return session;
+  }
+
+  async createSubscriptionSession(email:string, name:string) {
+    const customer = await this.createCustomer(email,name)
+    const product = await this.stripe.products.retrieve('prod_QSdTPH77Lz1wh5');
+    const price = await this.stripe.prices.retrieve(
+      product.default_price.toString(),
+    );
+    const session = await this.stripe.checkout.sessions.create({
+      success_url:
+        'https://docs.stripe.com/testing?testing-method=card-numbers#cards',
+      cancel_url:
+        'https://medium.com/@emmanuelodii80/how-to-setup-stripe-within-nestjs-application-61b7509a66dc',
+      line_items: [
+        {
+          price: price.id,
+          quantity: 2,
+        },
+      ],
+      mode: 'subscription',
+      metadata : {
+        customer: customer.name,
+        eventType: 'BUY COURSE',
+        product: product.name,
+      },
+    });
+    return session
   }
 }

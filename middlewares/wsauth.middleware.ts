@@ -1,24 +1,22 @@
-import { BadRequestException, Injectable, NestMiddleware, NotFoundException } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
-import { AuthService } from 'src/auth/auth.service';
+import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class WsAuthMiddleware implements NestMiddleware {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['authorization']?.split(' ')[1];
+  use(socket: Socket, next: (err?: any) => void) {
+    const token = socket.handshake.headers.authorization?.split(' ')[1];
     if (!token) {
-      throw new NotFoundException('Authorization token is required');
+      throw new UnauthorizedException('Token is required');
     }
-    this.authService.validateToken(token).then(
-      (decoded) => {
-        req['user'] = decoded;
-        next();
-      },
-      (err) => {
-        throw new BadRequestException('Invalid token');
-      }
-    );
+    try {
+      const decoded = this.jwtService.verify(token);
+      (socket as any).user = decoded;
+      next();
+    } catch (err) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
